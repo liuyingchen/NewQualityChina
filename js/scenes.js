@@ -48,7 +48,13 @@ function renderScenes(character) {
         <button id="view-awards">查看奖项</button>
     `;
     
-    // 创建/更新左下角角色信息
+    // 确保右上角控件在正确位置
+    topRightControls.style.position = 'absolute';
+    topRightControls.style.top = '20px';
+    topRightControls.style.right = '20px';
+    topRightControls.style.zIndex = '20';
+    
+    // 创建/更新左下角角色信息 - 只显示图片，移除文字说明
     let playerInfo = document.querySelector('.player-info');
     if (!playerInfo) {
         playerInfo = document.createElement('div');
@@ -61,6 +67,7 @@ function renderScenes(character) {
         "assets/characters/character1.png" : 
         "assets/characters/character2.png";
 
+    // 移除角色文字说明，只保留图片
     playerInfo.innerHTML = `<img src="${characterImage}" alt="${character.name}">`;
     
     // 渲染场景卡片
@@ -96,11 +103,16 @@ function renderScenes(character) {
     // 添加事件监听
     addSceneEventListeners(character);
     
-    // 为新创建的查看奖项按钮添加事件监听
-    document.getElementById('view-awards').addEventListener('click', () => {
-        // 显示弹窗
-        showAwardsModal(character);
-    });
+    // 必须在HTML元素渲染完成后再添加事件监听器
+    const viewAwardsBtn = document.getElementById('view-awards');
+    if (viewAwardsBtn) {
+        // 直接绑定事件，不使用setTimeout
+        viewAwardsBtn.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            showAwardsModal(character);
+        };
+    }
 }
 
 // 为场景添加事件监听
@@ -125,7 +137,8 @@ function addSceneEventListeners(character) {
             // 前置场景未完成
             else {
                 const requiredScene = gameScenes.find(s => s.id === scene.requiresSceneId);
-                alert(`需要先完成 "${requiredScene.name}" 才能解锁此场景。`);
+                // 使用Toast替代alert
+                showToast(`需要先完成 "${requiredScene.name}" 才能解锁此场景`);
             }
         });
     });
@@ -148,7 +161,8 @@ function startGame(scene, character) {
             initStackingGame(gameContainer, character);
             break;
         case 'game2':
-            initGame2(gameContainer, character);
+            // 改为加载电动街头游戏
+            initElectricStreetGame(gameContainer, character);
             break;
         case 'game3':
             // 可以添加第三个游戏的初始化

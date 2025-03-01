@@ -1,0 +1,216 @@
+/* 完全全屏化叠叠乐游戏 */
+.page-header, header, .game-header-standalone, .game-header {
+    display: none !important;
+}
+
+/* 确保叠叠乐游戏容器占满整个视口 - 修复背景图不全屏问题 */
+.stacking-game {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    z-index: 9999; /* 提高z-index确保显示在最上层 */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 添加全屏背景 */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: url('../assets/games/stack-bg.png') no-repeat center center;
+    background-size: cover;
+    z-index: 9998; /* 确保在游戏容器下方 */
+}
+
+/* 确保html和body占满整个视口 */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* 主应用容器样式 */
+#app {
+    width: 100vw; /* 改用vw单位 */
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #f0f8ff; /* 浅蓝色背景 */
+    overflow: hidden;
+    margin: 0; /* 确保没有边距 */
+    padding: 0;
+}
+
+/* 确保所有screen元素也是全屏的 */
+.screen {
+    width: 100vw; /* 改用vw单位 */
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0; /* 确保没有边距 */
+    padding: 0;
+}
+
+/* 简化控制按钮 */
+.stacking-game .minimal-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 50;
+}
+
+/* 添加小型进度条样式 */
+.mini-progress-container {
+    width: 80px;
+    height: 8px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0 5px 5px 0;
+    position: relative;
+}
+
+.mini-progress-bar {
+    height: 100%;
+    background-color: #2ecc71;
+    width: 0%;
+    transition: width 0.3s;
+}
+
+.mini-progress-container #progress-text {
+    position: absolute;
+    top: -2px;
+    right: 0;
+    font-size: 10px;
+    color: white;
+    text-shadow: 0 0 2px rgba(0,0,0,0.7);
+}
+
+/* 积分卡片样式 - 调整为右上角位置 */
+.score-card {
+    position: fixed;
+    top: 15px; /* 从底部移到顶部 */
+    right: 15px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    padding: 12px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.score-display {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+#view-awards-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 100%;
+}
+
+#view-awards-btn:hover {
+    background-color: #2980b9;
+}
+
+/* 修改游戏状态显示，移动到左上角 */
+.minimal-stats {
+    position: fixed;
+    top: 15px;
+    left: 60px; /* 给返回按钮留出空间 */
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    z-index: 50;
+}
+
+/* 塔容器占据所有可用空间 */
+.stacking-game .tower-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: transparent;
+    z-index: 15;
+}
+
+/* 角色选择界面的布局 */
+#character-select {
+    width: 100vw;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 角色选择容器 */
+.character-container {
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+}
+
+/* 角色卡片样式 */
+.character {
+    flex: 0 1 auto;
+    margin: 0 10px;
+    padding: 20px;
+    background: white;
+    border-radius: 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+/* 标题样式 */
+.page-header {
+    width: 100vw;
+    text-align: center;
+    padding: 20px 0;
+    margin: 0;
+}
+
+/* 确保主要内容区域也是全屏的 */
+main {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    position: relative;
+} 

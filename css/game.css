@@ -4,19 +4,79 @@
 .stacking-game {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    height: 550px;
-}
-
-.game-area {
-    flex: 7; /* 70% 的比例 */
-    background-color: #f9f9f9;
-    border-radius: 10px;
+    gap: 10px;
+    height: 100vh;
+    width: 100%;
     position: relative;
     overflow: hidden;
-    margin-bottom: 10px;
+    background: url('../assets/games/stack-bg.png') no-repeat center center;
+    background-size: cover;
+    z-index: 1;
+    padding: 15px;
+}
+
+/* 移除可能引起冲突的背景设置 */
+.stacking-game-background {
+    display: none;
+}
+
+.stacking-game::before,
+#stacking-game::before {
+    display: none;
+}
+
+/* 隐藏游戏说明 */
+.stacking-game .instructions {
+    display: none;
+}
+
+/* 添加游戏头部样式 */
+.stacking-game .game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    z-index: 30;
+}
+
+/* 返回按钮样式 */
+.stacking-game .back-btn {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: all 0.3s;
+}
+
+.stacking-game .back-btn:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+}
+
+/* 游戏标题样式 */
+.stacking-game .game-title {
+    font-size: 1.5rem;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    margin: 0;
+    padding: 8px 15px;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+}
+
+/* 调整游戏区域比例，确保有足够空间 */
+.stacking-game .game-area {
+    flex: 1;
+    background-color: transparent;
+    position: relative;
+    overflow: visible;
     display: flex;
     flex-direction: column;
+    z-index: 10;
+    min-height: 65vh;
 }
 
 .game-stats {
@@ -28,37 +88,74 @@
     font-weight: bold;
 }
 
-.game-controls {
-    flex: 1; /* 10% 的比例 */
-    padding: 5px;
+/* 确保控制按钮区域在底部 */
+.stacking-game .game-controls {
+    padding: 15px;
     text-align: center;
-    position: sticky;
-    bottom: 0;
-    background-color: rgba(255, 255, 255, 0.9);
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.7);
     border-radius: 10px;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    z-index: 30;
+    margin-top: auto;
+    margin-bottom: 10px;
 }
 
-.tower-container {
+/* 调整塔容器样式，确保可见性 */
+.stacking-game .tower-container {
     width: 100%;
     height: 100%;
     position: relative;
-    background: linear-gradient(to bottom, #87CEEB, #f0f0f0);
+    background: transparent;
+    z-index: 15;
+    transform: none;
+    margin-top: 0;
+    overflow: visible; /* 确保内容不被截断 */
 }
 
-.base-block {
-    width: 120px;
-    height: 20px;
-    background-color: #7f8c8d;
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.moving-block, .placed-block {
+/* 确保移动方块在最上层 */
+.stacking-game .moving-block, 
+.stacking-game .placed-block {
     border-radius: 3px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 20; /* 确保在最上层 */
+}
+
+/* 修改移动方块的背景为纯色而非图片 */
+.stacking-game .moving-block {
+    border-radius: 3px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 20;
+    background-image: none; /* 移除背景图 */
+    background-color: #7f8c8d; /* 灰色 */
+    border: none; /* 移除边框 */
+}
+
+/* 已放置的方块也使用纯色 */
+.stacking-game .placed-block {
+    border-radius: 3px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 20;
+    background-image: none; /* 移除背景图 */
+    background-color: #7f8c8d; /* 默认为灰色 */
+    border: none; /* 移除边框 */
+    position: absolute;
+}
+
+/* 修改基础方块的位置，使其位于背景图的60%高度处 */
+.stacking-game .base-block {
+    width: 132px; /* 增加10% = 120px * 1.1 */
+    height: 22px; /* 增加10% = 20px * 1.1 */
+    background-color: #7f8c8d;
+    background-image: none; /* 移除背景图 */
+    position: absolute;
+    bottom: 35%; /* 调整到更容易看到的位置 */
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 3px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 19;
+    border: none; /* 确保没有边框 */
 }
 
 #place-block {
@@ -73,25 +170,37 @@
     background-color: #27ae60;
 }
 
-.instructions {
-    flex: 2; /* 20% 的比例 */
-    background-color: #f0f0f0;
+/* 增强游戏内统计信息的可见性 */
+.stacking-game .in-game-stats {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
     padding: 10px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    font-size: 0.9rem;
-    overflow-y: auto;
+    border-radius: 8px;
+    z-index: 25; /* 确保在背景之上 */
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
 }
 
-@keyframes scoreFloat {
-    0% {
-        opacity: 1;
-        transform: translate(-50%, -50%);
-    }
-    100% {
-        opacity: 0;
-        transform: translate(-50%, -100%);
-    }
+.in-game-stats .progress-container {
+    height: 15px;
+    margin-bottom: 5px;
+}
+
+/* 调整层级显示 */
+.stacking-game .level-display {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 8px;
+    z-index: 25; /* 确保在背景之上 */
+    display: flex;
+    gap: 15px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
 }
 
 /* 屋顶区域 */
@@ -261,34 +370,185 @@
     }
 }
 
-/* 游戏区域内的状态显示 */
-.in-game-stats {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: rgba(255, 255, 255, 0.7);
-    padding: 8px;
-    border-radius: 8px;
-    z-index: 20;
-    width: 200px;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.in-game-stats .progress-container {
-    height: 15px;
-    margin-bottom: 5px;
-}
-
-.level-display {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    background-color: rgba(255, 255, 255, 0.7);
-    padding: 8px;
-    border-radius: 8px;
-    z-index: 20;
+/* 电动街头游戏样式 */
+.electric-street-game {
+    width: 100%;
+    height: 100vh; /* 使用视窗高度单位覆盖整个页面 */
     display: flex;
-    gap: 15px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.electric-street-game .game-area {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.electric-street-game .city-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../assets/games/city-background.jpg');
+    background-size: cover;
+    background-position: center center;
+    z-index: 0;
+}
+
+/* 移除天空和道路元素的样式，直接使用背景图 */
+.electric-street-game .sky,
+.electric-street-game .road {
+    display: none;
+}
+
+/* 悬浮式游戏状态显示 */
+.electric-street-game .game-stats-floating {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-weight: bold;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+/* 调整控制按钮位置 */
+.electric-street-game .controls {
+    position: fixed;
+    bottom: 30px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 100;
+}
+
+.electric-street-game .action-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 30px; /* 圆形按钮 */
+    font-size: 1.1rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.electric-street-game .action-btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+}
+
+/* 调整汽车位置和样式 */
+.electric-street-game .car {
+    position: absolute;
+    width: 400px; /* 稍微放大汽车尺寸 */
+    height: 150px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: all 0.5s;
+    cursor: pointer;
+    z-index: 10;
+    transform: rotate(-10deg);
+}
+
+.electric-street-game .gas-car {
+    background-image: url('../assets/games/gas-car.png');
+}
+
+.electric-street-game .ev-car {
+    background-image: url('../assets/games/ev-car.png');
+}
+
+.electric-street-game .ev-car.low-battery {
+    opacity: 0.7;
+    filter: grayscale(0.8);
+    background-color: #95a5a6;
+    transition: all 0.5s ease-in-out;
+}
+
+.electric-street-game .ev-car.charged {
+    opacity: 1;
+    filter: none;
+    background-color: #2ecc71;
+    animation: chargePulse 2s;
+}
+
+@keyframes chargePulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 rgba(46, 204, 113, 0); }
+    50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(46, 204, 113, 0.7); }
+    100% { transform: scale(1); box-shadow: 0 0 5px rgba(46, 204, 113, 0.3); }
+}
+
+.electric-street-game .fade-out {
+    opacity: 0;
+    transform: translateX(-50px);
+}
+
+.electric-street-game .game-area.completed {
+    animation: completion 2s;
+}
+
+@keyframes completion {
+    0% { filter: brightness(1); }
+    50% { filter: brightness(1.5); }
+    100% { filter: brightness(1); }
+}
+
+/* 移除不需要的充电桩样式代码 */
+.electric-street-game .charger,
+.electric-street-game .charger::before,
+.electric-street-game .charger::after {
+    display: none;
+}
+
+/* 简化游戏样式 */
+.electric-street-game .game-area {
+    min-height: 400px; /* 稍微增加游戏区域高度，提供更好的视觉体验 */
+}
+
+/* 优化汽车动画效果 */
+.electric-street-game .ev-car.low-battery {
+    opacity: 0.7;
+    filter: grayscale(0.8);
+    background-color: #95a5a6;
+    transition: all 0.5s ease-in-out;
+}
+
+.electric-street-game .ev-car.charged {
+    opacity: 1;
+    filter: none;
+    background-color: #2ecc71;
+    animation: chargePulse 2s;
+}
+
+@keyframes chargePulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 rgba(46, 204, 113, 0); }
+    50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(46, 204, 113, 0.7); }
+    100% { transform: scale(1); box-shadow: 0 0 5px rgba(46, 204, 113, 0.3); }
+}
+
+/* 如果游戏在iframe中，可能需要设置iframe的背景 */
+#game-iframe {
+    background-image: url('../assets/games/stack-bg.png');
+    background-size: cover;
+}
+
+/* 恢复移动模块的CSS定位，去掉auto设置 */
+.stacking-game #moving-block {
+    /* 不需要在CSS中设置固定的bottom值，让JavaScript控制 */
+    position: absolute; /* 确保定位属性正确 */
+    z-index: 30; /* 确保在其他元素上方显示 */
 }

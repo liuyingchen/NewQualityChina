@@ -89,10 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
         switchScreen('game-screen', 'scene-select');
     });
     
-    // 返回场景按钮（从奖项界面）
-    addSafeEventListener('back-from-awards', 'click', () => {
-        switchScreen('awards-screen', 'scene-select');
-    });
+    // 检查并移除现有的奖项返回按钮事件监听器
+    const backFromAwardsBtn = document.getElementById('back-from-awards');
+    if (backFromAwardsBtn) {
+        backFromAwardsBtn.replaceWith(backFromAwardsBtn.cloneNode(true));
+    }
     
     // 再玩一次按钮
     addSafeEventListener('play-again', 'click', () => {
@@ -103,6 +104,54 @@ document.addEventListener('DOMContentLoaded', () => {
         // 返回开始界面
         switchScreen('end-screen', 'start-screen');
     });
+    
+    // 检查是否从游戏返回
+    const returnFromGame = localStorage.getItem('returnFromGame');
+    if (returnFromGame === 'true') {
+        // 清除标记
+        localStorage.removeItem('returnFromGame');
+        
+        // 获取角色ID
+        const characterId = localStorage.getItem('characterId');
+        if (characterId) {
+            // 从localStorage加载角色数据
+            const characterData = loadCharacter();
+            
+            // 创建新的Character实例
+            if (characterData) {
+                const character = new Character(
+                    characterData.id, 
+                    characterData.name, 
+                    characterData.avatarId,
+                    characterData.score,
+                    characterData.completedScenes,
+                    characterData.unlockedScenes,
+                    characterData.awards
+                );
+                
+                // 显示场景选择
+                setTimeout(() => {
+                    switchScreen('start-screen', 'scene-select');
+                    renderScenes(character);
+                }, 100);
+            }
+        }
+    }
+    
+    // 检查URL参数
+    const urlParams = new URLSearchParams(window.location.search);
+    const screenParam = urlParams.get('screen');
+    if (screenParam === 'scene-select') {
+        // 从localStorage加载角色
+        const characterJson = localStorage.getItem('character');
+        if (characterJson) {
+            const character = JSON.parse(characterJson);
+            setTimeout(() => {
+                switchScreen('start-screen', 'scene-select');
+                renderScenes(character);
+            }, 100);
+        }
+    }
     
     console.log('初始化完成');
 });
@@ -141,38 +190,45 @@ function switchScreen(fromId, toId) {
     }, 450);
 }
 
-// 显示奖项弹窗
+// 显示奖项下拉菜单
 function showAwardsModal(character) {
-    if (!character) {
-        console.error('显示奖项时角色数据为空');
+    console.log('显示奖项菜单'); // 调试日志
+    
+    // 检查是否已存在奖项下拉菜单
+    const existingDropdown = document.querySelector('.awards-dropdown');
+    if (existingDropdown) {
+        existingDropdown.remove();
         return;
     }
     
-    // 添加样式
-    addModalStyles();
+    // 获取查看奖项按钮
+    const awardBtn = document.getElementById('view-awards');
+    if (!awardBtn) {
+        console.error('无法找到奖项按钮');
+        return;
+    }
     
-    // 创建弹窗结构
-    const modalOverlay = document.createElement('div');
-    modalOverlay.className = 'modal-overlay';
-    
-    let modalContent = `
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">你的奖项</h3>
-                <button class="modal-close">&times;</button>
-            </div>
-    `;
+    // 创建下拉菜单
+    const dropdown = document.createElement('div');
+    dropdown.className = 'awards-dropdown';
     
     // 添加奖项内容
+    let dropdownContent = `
+        <div class="awards-header">
+            <h3>你的奖项</h3>
+        </div>
+        <div class="awards-content">
+    `;
+    
     if (!character.awards || character.awards.length === 0) {
-        modalContent += `<div class="no-awards">你还没有获得任何奖项</div>`;
+        dropdownContent += `<div class="no-awards">你还没有获得任何奖项</div>`;
     } else {
         character.awards.forEach(award => {
             // 获取对应场景名称
             const scene = gameScenes.find(s => s.id === award.sceneId);
             const sceneName = scene ? scene.name : "未知场景";
             
-            modalContent += `
+            dropdownContent += `
                 <div class="award-item">
                     <strong>${sceneName}</strong> - ${award.points}积分 - ${award.name}
                 </div>
@@ -180,90 +236,19 @@ function showAwardsModal(character) {
         });
     }
     
-    modalContent += `</div>`;
-    modalOverlay.innerHTML = modalContent;
+    dropdownContent += `</div>`;
+    dropdown.innerHTML = dropdownContent;
     
-    // 添加关闭事件
-    document.body.appendChild(modalOverlay);
-    modalOverlay.querySelector('.modal-close').addEventListener('click', () => {
-        document.body.removeChild(modalOverlay);
-    });
+    // 将下拉菜单添加到顶部控制栏
+    awardBtn.parentNode.appendChild(dropdown);
     
-    // 点击背景也关闭
-    modalOverlay.addEventListener('click', (e) => {
-        if (e.target === modalOverlay) {
-            document.body.removeChild(modalOverlay);
+    // 添加关闭下拉菜单的功能
+    document.addEventListener('click', function closeDropdown(e) {
+        if (!dropdown.contains(e.target) && e.target !== awardBtn) {
+            dropdown.remove();
+            document.removeEventListener('click', closeDropdown);
         }
     });
-}
-
-// 添加弹窗样式
-function addModalStyles() {
-    // 检查是否已添加样式
-    if (!document.getElementById('modal-styles')) {
-        const styleSheet = document.createElement('style');
-        styleSheet.id = 'modal-styles';
-        styleSheet.innerHTML = `
-            .modal-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-color: rgba(0, 0, 0, 0.5);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 1000;
-            }
-            .modal-content {
-                background-color: white;
-                border-radius: 15px;
-                padding: 20px;
-                max-width: 80%;
-                max-height: 80vh;
-                overflow-y: auto;
-                box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
-            }
-            .modal-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 15px;
-                padding-bottom: 10px;
-                border-bottom: 1px solid #eee;
-            }
-            .modal-title {
-                font-size: 1.5rem;
-                color: #3498db;
-                margin: 0;
-            }
-            .modal-close {
-                background: none;
-                border: none;
-                font-size: 1.5rem;
-                cursor: pointer;
-                color: #7f8c8d;
-            }
-            .modal-close:hover {
-                color: #e74c3c;
-            }
-            .award-item {
-                padding: 10px;
-                margin-bottom: 10px;
-                border-bottom: 1px solid #eee;
-            }
-            .award-item:last-child {
-                border-bottom: none;
-            }
-            .no-awards {
-                text-align: center;
-                color: #7f8c8d;
-                padding: 20px;
-            }
-        `;
-        document.head.appendChild(styleSheet);
-    }
 }
 
 // 浏览器兼容性检测
@@ -341,4 +326,36 @@ window.addEventListener('error', function(event) {
             errorMessage.parentNode.removeChild(errorMessage);
         }
     }, 5000);
-}); 
+});
+
+// 修复可能的错误引用 - 确保页面中各处都使用弹窗
+function handleViewAwards(character) {
+    showAwardsModal(character);
+}
+
+// 确保该函数暴露给全局，以便其他地方调用
+window.handleViewAwards = handleViewAwards;
+
+// 显示Toast消息
+function showToast(message, duration = 1500) {
+    // 移除可能存在的旧消息
+    const existingToast = document.querySelector('.toast-message');
+    if (existingToast) {
+        existingToast.remove();
+    }
+    
+    // 创建新消息
+    const toast = document.createElement('div');
+    toast.className = 'toast-message';
+    toast.textContent = message;
+    
+    // 添加到页面
+    document.body.appendChild(toast);
+    
+    // 设置定时器自动移除
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+        }
+    }, duration);
+} 

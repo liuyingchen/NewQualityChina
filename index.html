@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>创新能源游戏</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/game.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- 开始界面 -->
+    <div id="start-screen" class="screen">
+        <h1>创新能源游戏</h1>
+        <button id="start-btn">开始游戏</button>
+    </div>
+
+    <!-- 角色选择界面 -->
+    <div id="character-select" class="screen hidden">
+        <div class="screen-header">
+            <button class="back-button" id="back-to-start">返回</button>
+            <h2>选择你的角色</h2>
+        </div>
+        <div class="character-container">
+            <div class="character" data-id="1">
+                <div class="character-card">
+                    <img src="assets/characters/character1.png" alt="角色1">
+                    <div class="character-info">
+                        <h3>能源专家</h3>
+                        <p>擅长能源管理，初始积分较高</p>
+                    </div>
+                </div>
+            </div>
+            <div class="character" data-id="2">
+                <div class="character-card">
+                    <img src="assets/characters/character2.png" alt="角色2">
+                    <div class="character-info">
+                        <h3>创新工程师</h3>
+                        <p>擅长创新技术，解锁场景更快</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 场景选择界面 -->
+    <div id="scene-select" class="screen hidden">
+        <div class="screen-header">
+            <button class="back-button" id="back-to-character">返回</button>
+            <h2>选择游戏场景</h2>
+        </div>
+        <div class="scene-container">
+            <!-- 场景将通过JS动态生成 -->
+        </div>
+    </div>
+
+    <!-- 游戏界面 -->
+    <div id="game-screen" class="screen hidden">
+        <div class="screen-header">
+            <button class="back-button" id="back-to-scenes">返回</button>
+            <h2 id="game-title"></h2>
+        </div>
+        
+        <div id="game-container">
+            <!-- 游戏内容将通过JS动态生成 -->
+        </div>
+    </div>
+
+    <!-- 奖项展示界面 -->
+    <div id="awards-screen" class="screen hidden">
+        <h2>你的奖项</h2>
+        <div id="awards-container">
+            <!-- 奖项将通过JS动态生成 -->
+        </div>
+        <button id="back-from-awards">返回场景</button>
+    </div>
+
+    <!-- 游戏结束界面 -->
+    <div id="end-screen" class="screen hidden">
+        <h2>游戏完成!</h2>
+        <div class="final-stats">
+            <h3 id="final-name"></h3>
+            <p>最终积分: <span id="final-score"></span></p>
+            <h3>获得的奖项:</h3>
+            <ul id="final-awards">
+                <!-- 奖项将通过JS动态生成 -->
+            </ul>
+        </div>
+        <button id="play-again">再玩一次</button>
+    </div>
+
+    <!-- 脚本引入 -->
+    <script src="js/character.js"></script>
+    <script src="js/scenes.js"></script>
+    <script src="js/games/stacking.js"></script>
+    <script src="js/games/game2.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html> 

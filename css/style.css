@@ -1,0 +1,609 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    line-height: 1.6;
+}
+
+.screen {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    opacity: 1;
+    transform: translateY(0);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.screen.hidden {
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+    position: absolute;
+}
+
+.screen.slide-in {
+    animation: slideIn 0.5s forwards;
+}
+
+.screen.slide-out {
+    animation: slideOut 0.5s forwards;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+}
+
+/* 添加页面标题和导航 */
+.screen-header {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.back-button {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: transparent;
+    color: #3498db;
+    border: 2px solid #3498db;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.back-button:before {
+    content: "←";
+    margin-right: 5px;
+    font-size: 1.2em;
+}
+
+.back-button:hover {
+    background-color: #3498db;
+    color: white;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: #2c3e50;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #3498db;
+}
+
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* 开始界面 */
+#start-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#start-btn {
+    font-size: 1.2rem;
+    padding: 15px 30px;
+}
+
+/* 角色选择界面优化 */
+.character-container {
+    perspective: 1200px;
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin: 50px 0;
+}
+
+.character {
+    flex: 0 0 30%; /* 降低了宽度比例 */
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.character-card {
+    background-color: white;
+    border-radius: 18px;
+    padding: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid transparent;
+}
+
+.character:hover .character-card {
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    transform: translateY(-15px) rotateY(12deg);
+    border-color: #3498db;
+}
+
+.character.selected .character-card {
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    transform: translateY(-20px) rotateY(15deg) scale(1.05);
+    border-color: #2ecc71;
+}
+
+.character img {
+    width: 70%; /* 缩小至原来的70% */
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+    transform: translateZ(30px);
+    border-radius: 10px;
+}
+
+.character:hover img {
+    transform: translateZ(50px) scale(1.05) rotate(5deg);
+}
+
+.character.selected img {
+    transform: translateZ(70px) scale(1.1) rotate(8deg);
+}
+
+.character-info {
+    padding: 15px 0;
+    text-align: center;
+    transform: translateZ(40px);
+    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.character:hover .character-info {
+    transform: translateZ(60px);
+}
+
+.character-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.7) 50%,
+        rgba(255,255,255,0) 100%
+    );
+    transform: rotate(45deg);
+    transition: all 1s ease;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.character:hover .character-card::before {
+    left: 100%;
+    top: 100%;
+    opacity: 1;
+}
+
+@keyframes glowing {
+    0% { box-shadow: 0 0 5px rgba(46, 204, 113, 0.6); }
+    25% { box-shadow: 0 0 10px rgba(46, 204, 113, 0.8), 0 0 20px rgba(46, 204, 113, 0.4); }
+    50% { box-shadow: 0 0 15px rgba(46, 204, 113, 1), 0 0 25px rgba(46, 204, 113, 0.6); }
+    75% { box-shadow: 0 0 10px rgba(46, 204, 113, 0.8), 0 0 20px rgba(46, 204, 113, 0.4); }
+    100% { box-shadow: 0 0 5px rgba(46, 204, 113, 0.6); }
+}
+
+.character.selected .character-card {
+    animation: glowing 2s infinite;
+}
+
+/* 添加背景微妙动画 */
+@keyframes backgroundShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+#character-select {
+    background: linear-gradient(-45deg, #f5f7fa, #c3cfe2, #e0eafc, #cfdef3);
+    background-size: 400% 400%;
+    animation: backgroundShift 15s ease infinite;
+}
+
+/* 场景选择界面优化 */
+#scene-select {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 70px; /* 为顶部标题留出空间 */
+}
+
+/* 右上角积分和奖项按钮 */
+.top-right-controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: rgba(236, 240, 241, 0.8);
+    padding: 10px 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 10;
+}
+
+.score-display {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #2c3e50;
+}
+
+#view-awards {
+    padding: 8px 15px;
+    white-space: nowrap;
+}
+
+/* 左下角角色信息优化 */
+.player-info {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background-color: rgba(236, 240, 241, 0.8);
+    padding: 10px;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 10;
+    width: 60px;
+    height: 60px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.player-info img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* 场景卡片容器 */
+.scene-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    margin: 30px 0;
+    flex: 1;
+    flex-wrap: wrap;
+}
+
+/* 场景卡片 1:2 比例 */
+.scene {
+    border: 2px solid #ddd;
+    border-radius: 15px;
+    padding: 0;
+    overflow: hidden;
+    width: 250px;
+    height: 500px; /* 1:2 比例 */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.scene.unlocked:hover {
+    transform: translateY(-15px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+.scene.unlocked:active {
+    transform: translateY(-5px);
+}
+
+.scene img {
+    width: 100%;
+    height: 250px; /* 占一半高度 */
+    object-fit: cover;
+    margin-bottom: 0;
+}
+
+.scene-content {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(to bottom, #f9f9f9, #e8eaed);
+}
+
+.scene h3 {
+    margin-bottom: 15px;
+    color: #2c3e50;
+    font-size: 1.3rem;
+}
+
+.scene p {
+    color: #7f8c8d;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.scene-status {
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: auto;
+}
+
+.unlocked .scene-status {
+    background-color: rgba(46, 204, 113, 0.2);
+    color: #27ae60;
+}
+
+.locked .scene-status {
+    background-color: rgba(231, 76, 60, 0.2);
+    color: #c0392b;
+}
+
+/* 锁定图标 */
+.lock-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: rgba(231, 76, 60, 0.8);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 20px;
+}
+
+/* 响应式调整 */
+@media screen and (max-width: 768px) {
+    .scene {
+        width: 200px;
+        height: 400px;
+    }
+    
+    .scene img {
+        height: 200px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .scene-container {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .scene {
+        width: 85%;
+        height: 380px;
+    }
+    
+    .scene img {
+        height: 190px;
+    }
+    
+    .top-right-controls {
+        flex-direction: column;
+        align-items: flex-end;
+    }
+}
+
+/* 游戏界面 */
+.game-header {
+    background-color: #ecf0f1;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.progress-container {
+    width: 100%;
+    height: 20px;
+    background-color: #ddd;
+    border-radius: 10px;
+    margin: 15px 0;
+    position: relative;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #2ecc71;
+    border-radius: 10px;
+    width: 0;
+    transition: width 0.3s;
+}
+
+#progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #333;
+    font-weight: bold;
+}
+
+#game-container {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    min-height: 400px;
+    margin-bottom: 20px;
+}
+
+/* 奖项界面 */
+.award {
+    background-color: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    text-align: left;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.award h3 {
+    color: #3498db;
+    margin-bottom: 10px;
+}
+
+.date {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+/* 游戏结束界面 */
+.final-stats {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+#final-awards {
+    margin: 15px 0 15px 20px;
+}
+
+#final-awards li {
+    margin-bottom: 10px;
+}
+
+/* 游戏完成信息 */
+.game-complete {
+    text-align: center;
+    padding: 20px;
+}
+
+.game-complete h2 {
+    color: #2ecc71;
+    margin-bottom: 20px;
+}
+
+.game-complete p {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+#continue-btn {
+    margin-top: 20px;
+    font-size: 1.1rem;
+    padding: 12px 25px;
+}
+
+/* 兼容性警告 */
+.compatibility-warning {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #f39c12;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    z-index: 9999;
+    max-width: 90%;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+
+.close-warning {
+    background-color: white;
+    color: #f39c12;
+    margin-top: 10px;
+}
+
+/* 场景锁定状态美化 */
+.scene.locked {
+    filter: grayscale(0.7);
+    opacity: 0.85;
+}
+
+.scene.locked:hover {
+    filter: grayscale(0.5);
+    opacity: 0.9;
+}
+
+.can-unlock {
+    color: #27ae60;
+    font-weight: bold;
+    margin-top: 5px;
+    display: inline-block;
+}
+
+/* 场景图像渐变叠加 */
+.scene img {
+    position: relative;
+}
+
+.scene img::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(to top, rgba(0,0,0,0.3), transparent);
+    pointer-events: none;
+}

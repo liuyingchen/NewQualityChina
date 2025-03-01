@@ -1,0 +1,160 @@
+// 游戏场景定义
+const gameScenes = [
+    {
+        id: 1,
+        name: "太阳能创新中心",
+        description: "在这里体验太阳能技术的创新应用",
+        image: "assets/scenes/solar.jpg",
+        gameId: "stacking", // 对应叠叠乐游戏
+        unlockScore: 0, // 初始解锁
+        requiresSceneId: 0 // 不需要前置场景
+    },
+    {
+        id: 2,
+        name: "风能实验室",
+        description: "探索风能技术的前沿应用",
+        image: "assets/scenes/wind.jpg",
+        gameId: "game2",
+        unlockScore: 0, // 移除积分解锁
+        requiresSceneId: 1 // 需要场景1完成才能解锁
+    },
+    {
+        id: 3,
+        name: "智能电网控制中心",
+        description: "管理和优化能源分配",
+        image: "assets/scenes/grid.jpg",
+        gameId: "game3",
+        unlockScore: 0, // 移除积分解锁
+        requiresSceneId: 2 // 需要场景2完成才能解锁
+    }
+];
+
+// 渲染场景选择界面
+function renderScenes(character) {
+    // 更新场景容器
+    const sceneContainer = document.querySelector('.scene-container');
+    sceneContainer.innerHTML = '';
+    
+    // 创建/更新右上角积分和按钮
+    let topRightControls = document.querySelector('.top-right-controls');
+    if (!topRightControls) {
+        topRightControls = document.createElement('div');
+        topRightControls.className = 'top-right-controls';
+        document.getElementById('scene-select').appendChild(topRightControls);
+    }
+    
+    topRightControls.innerHTML = `
+        <div class="score-display">积分: <span id="player-score">${character.score}</span></div>
+        <button id="view-awards">查看奖项</button>
+    `;
+    
+    // 创建/更新左下角角色信息
+    let playerInfo = document.querySelector('.player-info');
+    if (!playerInfo) {
+        playerInfo = document.createElement('div');
+        playerInfo.className = 'player-info';
+        document.getElementById('scene-select').appendChild(playerInfo);
+    }
+    
+    // 根据角色类型选择对应图片
+    const characterImage = character.type === 1 ? 
+        "assets/characters/character1.png" : 
+        "assets/characters/character2.png";
+
+    playerInfo.innerHTML = `<img src="${characterImage}" alt="${character.name}">`;
+    
+    // 渲染场景卡片
+    gameScenes.forEach(scene => {
+        const isUnlocked = character.isSceneUnlocked(scene.id);
+        const canUnlock = !isUnlocked && 
+            (scene.requiresSceneId === 0 || character.isSceneCompleted(scene.requiresSceneId));
+        
+        const sceneElement = document.createElement('div');
+        sceneElement.className = `scene ${isUnlocked ? 'unlocked' : 'locked'}`;
+        sceneElement.dataset.id = scene.id;
+        
+        sceneElement.innerHTML = `
+            <img src="${scene.image}" alt="${scene.name}">
+            <div class="scene-content">
+                <div>
+                    <h3>${scene.name}</h3>
+                    <p>${scene.description}</p>
+                </div>
+                <div class="scene-status">
+                    ${!isUnlocked && !canUnlock ? 
+                        `<span class="lock-status">待解锁</span>` : 
+                        ''
+                    }
+                </div>
+            </div>
+            ${!isUnlocked ? '<div class="lock-icon">🔒</div>' : ''}
+        `;
+        
+        sceneContainer.appendChild(sceneElement);
+    });
+    
+    // 添加事件监听
+    addSceneEventListeners(character);
+    
+    // 为新创建的查看奖项按钮添加事件监听
+    document.getElementById('view-awards').addEventListener('click', () => {
+        // 显示弹窗
+        showAwardsModal(character);
+    });
+}
+
+// 为场景添加事件监听
+function addSceneEventListeners(character) {
+    // 点击场景卡片事件
+    document.querySelectorAll('.scene').forEach(sceneElement => {
+        sceneElement.addEventListener('click', () => {
+            const sceneId = parseInt(sceneElement.dataset.id);
+            const scene = gameScenes.find(s => s.id === sceneId);
+            
+            // 如果场景已解锁，直接开始游戏
+            if (character.isSceneUnlocked(sceneId)) {
+                startGame(scene, character);
+            } 
+            // 如果场景未解锁但可以解锁（前置场景已完成）
+            else if (scene.requiresSceneId === 0 || character.isSceneCompleted(scene.requiresSceneId)) {
+                character.unlockScene(sceneId);
+                saveCharacter(character);
+                renderScenes(character);
+                startGame(scene, character);
+            } 
+            // 前置场景未完成
+            else {
+                const requiredScene = gameScenes.find(s => s.id === scene.requiresSceneId);
+                alert(`需要先完成 "${requiredScene.name}" 才能解锁此场景。`);
+            }
+        });
+    });
+}
+
+// 开始游戏
+function startGame(scene, character) {
+    // 切换到游戏界面
+    switchScreen('scene-select', 'game-screen');
+    
+    // 设置游戏标题
+    document.getElementById('game-title').textContent = scene.name;
+    
+    // 根据场景加载对应游戏
+    const gameContainer = document.getElementById('game-container');
+    gameContainer.innerHTML = '';
+    
+    switch(scene.gameId) {
+        case 'stacking':
+            initStackingGame(gameContainer, character);
+            break;
+        case 'game2':
+            initGame2(gameContainer, character);
+            break;
+        case 'game3':
+            // 可以添加第三个游戏的初始化
+            gameContainer.innerHTML = '<p>第三个游戏正在开发中...</p>';
+            break;
+        default:
+            gameContainer.innerHTML = '<p>游戏正在开发中...</p>';
+    }
+} 

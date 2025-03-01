@@ -1,0 +1,130 @@
+/* 响应式设计 */
+
+/* 平板设备 */
+@media screen and (max-width: 768px) {
+    .screen {
+        padding: 15px;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    h2 {
+        font-size: 1.7rem;
+    }
+    
+    .character-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .character {
+        width: 80%;
+        max-width: 300px;
+    }
+    
+    #character-name {
+        width: 80%;
+    }
+}
+
+/* 手机设备 */
+@media screen and (max-width: 480px) {
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    .scene-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .game-header {
+        padding: 10px;
+    }
+    
+    button {
+        padding: 8px 16px;
+    }
+    
+    /* 游戏区域调整 */
+    .stacking-game {
+        height: auto;
+        min-height: 450px;
+    }
+    
+    .game-area {
+        height: 300px;
+    }
+    
+    .instructions {
+        font-size: 0.9rem;
+    }
+    
+    #place-block {
+        margin-bottom: 10px;
+    }
+    
+    .components {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+/* 触摸设备优化 */
+@media (hover: none) {
+    /* 增大可点击区域 */
+    button, .character, .scene, .panel, .battery, .tower-part {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* 移除悬停效果，改为激活状态 */
+    .character:hover {
+        transform: none;
+    }
+    
+    .character:active {
+        transform: translateY(-2px);
+    }
+    
+    button:hover {
+        background-color: #3498db;
+    }
+    
+    button:active {
+        background-color: #2980b9;
+    }
+}
+
+/* 横屏模式优化 */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+    #start-screen {
+        height: auto;
+        padding: 30px 0;
+    }
+    
+    .character-container {
+        flex-direction: row;
+    }
+    
+    .stacking-game {
+        flex-direction: row;
+    }
+}
+
+/* 高分辨率屏幕 */
+@media screen and (min-width: 1440px) {
+    .screen {
+        max-width: 1400px;
+    }
+    
+    #game-container {
+        min-height: 600px;
+    }
+}

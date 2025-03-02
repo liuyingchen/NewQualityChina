@@ -99,7 +99,7 @@ function initStackingGame(container, character) {
                 </div>
                 
                 <!-- 返回按钮 -->
-                <button id="back-to-scene" style="position:fixed;top:10px;left:10px;z-index:100;padding:5px 15px;border-radius:5px;background:rgba(0,0,0,0.5);color:white;border:none;">← 返回</button>
+                <button id="back-to-scene" class="back-button game-back-button">返回</button>
             </div>
         `;
         
@@ -218,7 +218,8 @@ function initStackingGame(container, character) {
             } else {
                 character.awards.forEach(award => {
                     // 获取对应场景名称，使用window.gameScenes
-                    const scene = window.gameScenes ? window.gameScenes.find(s => s.id === award.sceneId) : null;
+                    console.log('award:', award, window.gameScenes );
+                    const scene = gameScenes ? gameScenes.find(s => s.id === award.sceneId) : null;
                     const sceneName = scene ? scene.name : "未知场景";
                     
                     dropdownContent += `
@@ -228,6 +229,8 @@ function initStackingGame(container, character) {
                     `;
                 });
             }
+
+        
             
             dropdownContent += `</div>`;
             dropdown.innerHTML = dropdownContent;

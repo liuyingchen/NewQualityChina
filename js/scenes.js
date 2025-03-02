@@ -14,7 +14,7 @@ const gameScenes = [
         name: "风能实验室",
         description: "探索风能技术的前沿应用",
         image: "assets/scenes/wind.jpg",
-        gameId: "game2",
+        gameId: "electric_street",
         unlockScore: 0, // 移除积分解锁
         requiresSceneId: 1 // 需要场景1完成才能解锁
     },
@@ -23,7 +23,7 @@ const gameScenes = [
         name: "智能电网控制中心",
         description: "管理和优化能源分配",
         image: "assets/scenes/grid.jpg",
-        gameId: "game3",
+        gameId: "game2",
         unlockScore: 0, // 移除积分解锁
         requiresSceneId: 2 // 需要场景2完成才能解锁
     }
@@ -163,11 +163,11 @@ function startGame(scene, character) {
         case 'stacking':
             initStackingGame(gameContainer, character);
             break;
-        case 'game2':
+        case 'electric_street':
             // 改为加载电动街头游戏
             initElectricStreetGame(gameContainer, character);
             break;
-        case 'game3':
+        case 'game2':
             // 可以添加第三个游戏的初始化
             initGame2(gameContainer, character);
             break;

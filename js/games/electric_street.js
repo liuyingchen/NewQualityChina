@@ -179,8 +179,8 @@ function initElectricStreetGame(container, character) {
                     <button id="view-awards-btn" style="background-color:#3498db;color:white;border:none;padding:8px 15px;border-radius:8px;font-size:14px;cursor:pointer;width:100%;">查看奖项</button>
                 </div>
                 
-                <!-- 返回按钮 -->
-                <button id="back-to-scene" style="position:fixed;top:10px;left:10px;z-index:100;padding:5px 15px;border-radius:5px;background:rgba(0,0,0,0.5);color:white;border:none;">← 返回</button>
+                 <!-- 返回按钮 - 修改为使用.back-button类 -->
+         <button id="back-to-scene" class="back-button game-back-button">返回</button>
             </div>
         `;
         
@@ -327,6 +327,7 @@ function initElectricStreetGameLogic(character) {
     
     // 检查游戏是否完成
     function checkGameCompletion() {
+        console.log('gameState finish:', gameState.car1Converted);
         if (gameState.car1Converted && gameState.car2Converted && !gameState.gameCompleted) {
             gameState.gameCompleted = true;
             
@@ -471,7 +472,9 @@ function initElectricStreetGameLogic(character) {
             } else {
                 character.awards.forEach(award => {
                     // 获取对应场景名称，使用window.gameScenes
-                    const scene = window.gameScenes ? window.gameScenes.find(s => s.id === award.sceneId) : null;
+                    console.log('award:', award, window.gameScenes );
+                    const scene = gameScenes ? gameScenes.find(s => s.id === award.sceneId) : null;
+                    console.log('scene:', scene);
                     const sceneName = scene ? scene.name : "未知场景";
                     
                     dropdownContent += `
@@ -545,8 +548,10 @@ window.showAwardsModal = function(character) {
     if (!character.awards || character.awards.length === 0) {
         dropdownContent += `<div class="no-awards">你还没有获得任何奖项</div>`;
     } else {
+        console.log('character.awards:', character.awards);
         character.awards.forEach(award => {
-            const scene = window.gameScenes ? window.gameScenes.find(s => s.id === award.sceneId) : null;
+            console.log('award:', award, window.gameScenes );
+            const scene = gameScenes ? gameScenes.find(s => s.id === award.sceneId) : null;
             const sceneName = scene ? scene.name : "未知场景";
             
             dropdownContent += `

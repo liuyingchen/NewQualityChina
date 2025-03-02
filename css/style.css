@@ -100,6 +100,14 @@ body {
     color: white;
 }
 
+/* 添加一个专门用于游戏内返回按钮的修饰类 */
+.game-back-button {
+    position: fixed !important; /* 覆盖.back-button中的absolute */
+    top: 20px !important;
+    transform: none !important;
+    z-index: 1000 !important;
+}
+
 h1 {
     font-size: 2.5rem;
     margin-bottom: 30px;

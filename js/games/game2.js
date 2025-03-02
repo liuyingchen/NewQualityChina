@@ -70,17 +70,13 @@ function createGameUI(container, character) {
     // 创建返回按钮
     const backButton = document.createElement('button');
     backButton.id = 'back-to-scene';
-    backButton.textContent = '← 返回';
-    backButton.style.position = 'fixed';
-    backButton.style.top = '10px';
-    backButton.style.left = '10px';
-    backButton.style.zIndex = '1000';
-    backButton.style.padding = '5px 15px';
-    backButton.style.borderRadius = '5px';
-    backButton.style.backgroundColor = 'rgba(0,0,0,0.5)';
-    backButton.style.color = 'white';
-    backButton.style.border = 'none';
-    backButton.style.cursor = 'pointer';
+    backButton.className = 'back-button'; // 只使用CSS类
+    backButton.textContent = '返回';
+    
+    // 调整位置，因为原始CSS可能将按钮放在不适合游戏界面的位置
+    backButton.style.top = '20px'; // 覆盖CSS中的top值
+    backButton.style.transform = 'none'; // 移除垂直居中
+    backButton.style.zIndex = '1000'; // 确保按钮在其他元素之上
     
     // 创建积分显示
     const scoreDisplay = document.createElement('div');
@@ -120,6 +116,8 @@ function createGameUI(container, character) {
     
     // 添加返回按钮事件
     backButton.addEventListener('click', function() {
+
+        
         // 计算已完成的拼图数量
         const placedPieces = document.querySelectorAll('.puzzle-piece.placed').length;
         const totalPieces = 9;
@@ -127,17 +125,22 @@ function createGameUI(container, character) {
         // 如果有部分完成，给予部分积分
         if (placedPieces > 0 && placedPieces < totalPieces) {
             const partialPoints = Math.floor((placedPieces / totalPieces) * 30);
-            character.addScore(partialPoints);
+
+            character.addAward({
+                name: "风能拼图大师",
+                description: "部分风能实验室拼图",
+                points: partialPoints,
+                sceneId: 2 // 假设风能实验室是场景2
+            });
+
+            saveCharacter(character);
             alert(`你获得了 ${partialPoints} 积分！`);
         }
         
         // 恢复游戏场景的原始内容
         const gameScreen = document.getElementById('game-screen');
-        if (gameScreen) {
-            const originalContent = gameScreen.getAttribute('data-original-content');
-            if (originalContent) {
-                gameScreen.innerHTML = originalContent;
-            }
+        if (gameScreen && gameScreen.hasAttribute('data-original-content')) {
+            gameScreen.innerHTML = gameScreen.getAttribute('data-original-content');
         }
         
         // 使用switchScreen切换回场景选择界面
@@ -154,9 +157,79 @@ function createGameUI(container, character) {
     // 添加查看奖项按钮事件
     const viewAwardsBtn = document.getElementById('view-awards-btn');
     if (viewAwardsBtn) {
-        viewAwardsBtn.addEventListener('click', function() {
-            showAwardsModal(character);
+        viewAwardsBtn.addEventListener('click', () => {
+            console.log('查看奖项按钮被点击-game2.js'); // 调试日志
+            
+            // 修改：使用正确的全局游戏数据中的角色信息
+            const character = window.gameData.currentCharacter;
+            
+            if (!character) {
+                console.error('无法获取角色数据');
+                return;
+            }
+            
+            // 检查是否已存在奖项下拉菜单
+            const existingDropdown = document.querySelector('.awards-dropdown');
+            if (existingDropdown) {
+                existingDropdown.remove();
+                return;
+            }
+            
+            // 创建下拉菜单
+            const dropdown = document.createElement('div');
+            dropdown.className = 'awards-dropdown';
+            
+            // 添加奖项内容
+            let dropdownContent = `
+                <div class="awards-header">
+                    <h3>你的奖项</h3>
+                </div>
+                <div class="awards-content">
+            `;
+            
+            if (!character.awards || character.awards.length === 0) {
+                dropdownContent += `<div class="no-awards">你还没有获得任何奖项</div>`;
+            } else {
+                character.awards.forEach(award => {
+                    // 获取对应场景名称，使用window.gameScenes
+                    const scene = gameScenes ? gameScenes.find(s => s.id === award.sceneId) : null;
+                    const sceneName = scene ? scene.name : "未知场景";
+                    
+                    dropdownContent += `
+                        <div class="award-item">
+                            <strong>${sceneName}</strong> - ${award.points}积分 - ${award.name}
+                        </div>
+                    `;
+                });
+            }
+            
+            dropdownContent += `</div>`;
+            dropdown.innerHTML = dropdownContent;
+            
+            // 将下拉菜单添加到按钮的父元素
+            viewAwardsBtn.parentNode.appendChild(dropdown);
+            
+            // 添加样式
+            dropdown.style.position = 'absolute';
+            dropdown.style.top = '100%';
+            dropdown.style.right = '0';
+            dropdown.style.backgroundColor = 'white';
+            dropdown.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+            dropdown.style.borderRadius = '5px';
+            dropdown.style.zIndex = '10000';
+            dropdown.style.width = '250px';
+            dropdown.style.marginTop = '5px';
+            
+            // 添加点击其他区域关闭下拉菜单的功能
+            document.addEventListener('click', function closeDropdown(e) {
+                if (!dropdown.contains(e.target) && e.target !== viewAwardsBtn) {
+                    dropdown.remove();
+                    document.removeEventListener('click', closeDropdown);
+                }
+            });
         });
+    } else {
+        console.error('未找到查看奖项按钮');
     }
 }
 
@@ -388,22 +461,37 @@ function createPuzzleGame(container, character) {
                 points: earnedPoints,
                 sceneId: 2 // 假设风能实验室是场景2
             });
+
+            
             
             // 标记场景完成
             character.completeScene(2);
+
+            saveCharacter(character);
             
-            // 解锁下一个场景
-            const nextScene = window.gameScenes.find(s => s.requiresSceneId === 2);
-            if (nextScene && !character.isSceneUnlocked(nextScene.id)) {
-                character.unlockScene(nextScene.id);
-                
-                // 显示解锁提示
-                alert(`恭喜！你已解锁新场景：${nextScene.name}`);
+            // 安全地尝试解锁下一个场景
+            try {
+                // 检查 gameScenes 是否存在
+                if (window.gameScenes) {
+                    const nextScene = window.gameScenes.find(s => s.requiresSceneId === 2);
+                    if (nextScene && !character.isSceneUnlocked(nextScene.id)) {
+                        character.unlockScene(nextScene.id);
+                        
+                        // 显示解锁提示
+                        alert(`恭喜！你已解锁新场景：${nextScene.name}`);
+                    }
+                } else {
+                    console.log('gameScenes 未定义，跳过场景解锁');
+                }
+            } catch (error) {
+                console.error('解锁下一个场景时出错:', error);
             }
             
             // 保存角色信息
             if (typeof saveCharacter === 'function') {
                 saveCharacter(character);
+            } else {
+                console.log('saveCharacter 函数未定义，跳过保存');
             }
         }, 1000);
     }
@@ -443,7 +531,7 @@ window.showAwardsModal = function(character) {
         dropdownContent += `<div class="no-awards">你还没有获得任何奖项</div>`;
     } else {
         character.awards.forEach(award => {
-            const scene = window.gameScenes ? window.gameScenes.find(s => s.id === award.sceneId) : null;
+            const scene = gameScenes ? gameScenes.find(s => s.id === award.sceneId) : null;
             const sceneName = scene ? scene.name : "未知场景";
             
             dropdownContent += `

@@ -29,6 +29,9 @@ const gameScenes = [
     }
 ];
 
+// 添加调试模式变量
+const DEBUG_MODE = true; // 设置为 true 时跳过所有解锁限制
+
 // 渲染场景选择界面
 function renderScenes(character) {
     // 更新场景容器
@@ -72,14 +75,16 @@ function renderScenes(character) {
     
     // 渲染场景卡片
     gameScenes.forEach(scene => {
-        const isUnlocked = character.isSceneUnlocked(scene.id);
-        const canUnlock = !isUnlocked && 
-            (scene.requiresSceneId === 0 || character.isSceneCompleted(scene.requiresSceneId));
+        // 修改解锁逻辑，在调试模式下忽略所有限制
+        const isUnlocked = DEBUG_MODE ? true : character.isSceneUnlocked(scene.id);
+        const canUnlock = DEBUG_MODE ? true : (!isUnlocked && 
+            (scene.requiresSceneId === 0 || character.isSceneCompleted(scene.requiresSceneId)));
         
         const sceneElement = document.createElement('div');
         sceneElement.className = `scene ${isUnlocked ? 'unlocked' : 'locked'}`;
         sceneElement.dataset.id = scene.id;
         
+        // 在调试模式下移除所有锁定状态显示
         sceneElement.innerHTML = `
             <img src="${scene.image}" alt="${scene.name}">
             <div class="scene-content">
@@ -88,13 +93,13 @@ function renderScenes(character) {
                     <p>${scene.description}</p>
                 </div>
                 <div class="scene-status">
-                    ${!isUnlocked && !canUnlock ? 
+                    ${(!isUnlocked && !canUnlock && !DEBUG_MODE) ? 
                         `<span class="lock-status">待解锁</span>` : 
                         ''
                     }
                 </div>
             </div>
-            ${!isUnlocked ? '<div class="lock-icon">🔒</div>' : ''}
+            ${(!isUnlocked && !canUnlock && !DEBUG_MODE) ? '<div class="lock-icon">🔒</div>' : ''}
         `;
         
         sceneContainer.appendChild(sceneElement);
@@ -117,14 +122,13 @@ function renderScenes(character) {
 
 // 为场景添加事件监听
 function addSceneEventListeners(character) {
-    // 点击场景卡片事件
     document.querySelectorAll('.scene').forEach(sceneElement => {
         sceneElement.addEventListener('click', () => {
             const sceneId = parseInt(sceneElement.dataset.id);
             const scene = gameScenes.find(s => s.id === sceneId);
             
-            // 如果场景已解锁，直接开始游戏
-            if (character.isSceneUnlocked(sceneId)) {
+            // 在调试模式下直接开始游戏，忽略所有解锁检查
+            if (DEBUG_MODE || character.isSceneUnlocked(sceneId)) {
                 startGame(scene, character);
             } 
             // 如果场景未解锁但可以解锁（前置场景已完成）
@@ -137,7 +141,6 @@ function addSceneEventListeners(character) {
             // 前置场景未完成
             else {
                 const requiredScene = gameScenes.find(s => s.id === scene.requiresSceneId);
-                // 使用Toast替代alert
                 showToast(`需要先完成 "${requiredScene.name}" 才能解锁此场景`);
             }
         });
@@ -166,7 +169,7 @@ function startGame(scene, character) {
             break;
         case 'game3':
             // 可以添加第三个游戏的初始化
-            gameContainer.innerHTML = '<p>第三个游戏正在开发中...</p>';
+            initGame2(gameContainer, character);
             break;
         default:
             gameContainer.innerHTML = '<p>游戏正在开发中...</p>';

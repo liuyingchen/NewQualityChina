@@ -113,7 +113,7 @@ function initStackingGame(container, character) {
     let score = 0;
     let currentLevel = 1;
     let gameOver = false;
-    let blockSpeed = 12;
+    let blockSpeed = 3;
     let blockDirection = 1; // 1为向右，-1为向左
     let animationId = null;
     
@@ -184,7 +184,7 @@ function initStackingGame(container, character) {
     const viewAwardsBtn = document.getElementById('view-awards-btn');
     if (viewAwardsBtn) {
         viewAwardsBtn.addEventListener('click', () => {
-            console.log('查看奖项按钮被点击'); // 调试日志
+            console.log('查看奖项按钮被点击-stacking.js'); // 调试日志
             
             // 修改：使用正确的全局游戏数据中的角色信息
             const character = window.gameData.currentCharacter;
@@ -583,7 +583,7 @@ function initStackingGame(container, character) {
 
 // 确保showAwardsModal函数在全局作用域中可用
 window.showAwardsModal = function(character) {
-    console.log('显示奖项菜单'); // 调试日志
+    console.log('显示奖项菜单-stacking.js'); // 调试日志
     
     // 检查是否已存在奖项下拉菜单
     const existingDropdown = document.querySelector('.awards-dropdown');

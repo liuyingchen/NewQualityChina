@@ -58,9 +58,10 @@ html, body {
 
 /* 确保所有screen元素也是全屏的 */
 .screen {
+    position: absolute;  /* 改为 relative */
+    height: auto;       /* 移除固定高度 */
+    min-height: 100vh;  /* 使用最小高度 */
     width: 100vw; /* 改用vw单位 */
-    height: 100vh;
-    position: absolute;
     top: 0;
     left: 0;
     display: flex;
@@ -213,4 +214,11 @@ main {
     margin: 0;
     padding: 0;
     position: relative;
+}
+
+/* 确保开始屏幕可见 */
+#start-screen {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 } 

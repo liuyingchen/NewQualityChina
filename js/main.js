@@ -13,147 +13,164 @@ function addSafeEventListener(id, event, callback) {
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('页面加载完成，开始初始化');
-    
-    // 清除之前保存的角色，确保每次都从头开始
-    localStorage.removeItem('gameCharacter');
-    currentCharacter = null;
-    
-    // 确保开始屏幕总是显示
-    const startScreen = document.getElementById('start-screen');
-    if (startScreen) {
-        startScreen.classList.remove('hidden');
-    } else {
-        console.error('找不到开始屏幕元素！');
-        return; // 终止初始化
-    }
-    
-    // 确保其他屏幕隐藏
-    document.querySelectorAll('.screen:not(#start-screen)').forEach(screen => {
-        screen.classList.add('hidden');
-    });
-    
-    // 开始按钮事件
-    addSafeEventListener('start-btn', 'click', () => {
-        switchScreen('start-screen', 'character-select');
-    });
-    
-    // 角色选择事件
-    const characters = document.querySelectorAll('.character');
-    characters.forEach(char => {
-        char.addEventListener('click', () => {
-            // 清除其他角色的选中状态
-            characters.forEach(c => c.classList.remove('selected'));
-            
-            // 选中当前角色
-            char.classList.add('selected');
-            
-            // 延迟一小段时间展示动画效果，然后自动进入下一个场景
-            setTimeout(() => {
-                // 创建角色
-                const characterId = parseInt(char.dataset.id);
-                // 使用默认角色名
-                const characterName = characterId === 1 ? "能源专家" : "创新工程师";
-                currentCharacter = new Character(characterId, characterName, characterId);
-                
-                // 保存角色
-                saveCharacter(currentCharacter);
-                
-                // 进入场景选择
-                switchScreen('character-select', 'scene-select');
-                renderScenes(currentCharacter);
-            }, 800); // 延迟800毫秒，让动画效果更明显
+    console.log('开始初始化页面...');
+    try {
+        // 检查必要的DOM元素
+        const startScreen = document.getElementById('start-screen');
+        if (!startScreen) {
+            console.error('找不到开始屏幕元素');
+            return;
+        }
+        console.log('找到开始屏幕元素');
+
+        // 检查必要的脚本是否加载
+        if (typeof Character === 'undefined') {
+            console.error('Character 类未定义');
+            return;
+        }
+        console.log('Character 类已加载');
+
+        // 清除之前保存的角色，确保每次都从头开始
+        localStorage.removeItem('gameCharacter');
+        currentCharacter = null;
+        
+        // 确保开始屏幕总是显示
+        if (startScreen) {
+            startScreen.classList.remove('hidden');
+        } else {
+            console.error('找不到开始屏幕元素！');
+            return; // 终止初始化
+        }
+        
+        // 确保其他屏幕隐藏
+        document.querySelectorAll('.screen:not(#start-screen)').forEach(screen => {
+            screen.classList.add('hidden');
         });
-    });
-    
-    // 事件监听器设置
-    console.log('设置事件监听器');
-    
-    // 返回到开始界面
-    addSafeEventListener('back-to-start', 'click', () => {
-        switchScreen('character-select', 'start-screen');
-    });
-    
-    // 添加返回到角色选择界面的事件监听器
-    addSafeEventListener('back-to-character', 'click', () => {
-        // 简化的返回逻辑，直接返回角色选择界面
-        switchScreen('scene-select', 'character-select');
         
-        // 清除当前角色
-        localStorage.removeItem('gameCharacter');
-        currentCharacter = null;
-    });
-    
-    // 返回场景按钮（从游戏界面）
-    addSafeEventListener('back-to-scenes', 'click', () => {
-        switchScreen('game-screen', 'scene-select');
-    });
-    
-    // 检查并移除现有的奖项返回按钮事件监听器
-    const backFromAwardsBtn = document.getElementById('back-from-awards');
-    if (backFromAwardsBtn) {
-        backFromAwardsBtn.replaceWith(backFromAwardsBtn.cloneNode(true));
-    }
-    
-    // 再玩一次按钮
-    addSafeEventListener('play-again', 'click', () => {
-        // 清除保存的角色
-        localStorage.removeItem('gameCharacter');
-        currentCharacter = null;
+        // 开始按钮事件
+        addSafeEventListener('start-btn', 'click', () => {
+            switchScreen('start-screen', 'character-select');
+        });
         
-        // 返回开始界面
-        switchScreen('end-screen', 'start-screen');
-    });
-    
-    // 检查是否从游戏返回
-    const returnFromGame = localStorage.getItem('returnFromGame');
-    if (returnFromGame === 'true') {
-        // 清除标记
-        localStorage.removeItem('returnFromGame');
-        
-        // 获取角色ID
-        const characterId = localStorage.getItem('characterId');
-        if (characterId) {
-            // 从localStorage加载角色数据
-            const characterData = loadCharacter();
-            
-            // 创建新的Character实例
-            if (characterData) {
-                const character = new Character(
-                    characterData.id, 
-                    characterData.name, 
-                    characterData.avatarId,
-                    characterData.score,
-                    characterData.completedScenes,
-                    characterData.unlockedScenes,
-                    characterData.awards
-                );
+        // 角色选择事件
+        const characters = document.querySelectorAll('.character');
+        characters.forEach(char => {
+            char.addEventListener('click', () => {
+                // 清除其他角色的选中状态
+                characters.forEach(c => c.classList.remove('selected'));
                 
-                // 显示场景选择
+                // 选中当前角色
+                char.classList.add('selected');
+                
+                // 延迟一小段时间展示动画效果，然后自动进入下一个场景
+                setTimeout(() => {
+                    // 创建角色
+                    const characterId = parseInt(char.dataset.id);
+                    // 使用默认角色名
+                    const characterName = characterId === 1 ? "能源专家" : "创新工程师";
+                    currentCharacter = new Character(characterId, characterName, characterId);
+                    
+                    // 保存角色
+                    saveCharacter(currentCharacter);
+                    
+                    // 进入场景选择
+                    switchScreen('character-select', 'scene-select');
+                    renderScenes(currentCharacter);
+                }, 800); // 延迟800毫秒，让动画效果更明显
+            });
+        });
+        
+        // 事件监听器设置
+        console.log('设置事件监听器');
+        
+        // 返回到开始界面
+        addSafeEventListener('back-to-start', 'click', () => {
+            switchScreen('character-select', 'start-screen');
+        });
+        
+        // 添加返回到角色选择界面的事件监听器
+        addSafeEventListener('back-to-character', 'click', () => {
+            // 简化的返回逻辑，直接返回角色选择界面
+            switchScreen('scene-select', 'character-select');
+            
+            // 清除当前角色
+            localStorage.removeItem('gameCharacter');
+            currentCharacter = null;
+        });
+        
+        // 返回场景按钮（从游戏界面）
+        addSafeEventListener('back-to-scenes', 'click', () => {
+            switchScreen('game-screen', 'scene-select');
+        });
+        
+        // 检查并移除现有的奖项返回按钮事件监听器
+        const backFromAwardsBtn = document.getElementById('back-from-awards');
+        if (backFromAwardsBtn) {
+            backFromAwardsBtn.replaceWith(backFromAwardsBtn.cloneNode(true));
+        }
+        
+        // 再玩一次按钮
+        addSafeEventListener('play-again', 'click', () => {
+            // 清除保存的角色
+            localStorage.removeItem('gameCharacter');
+            currentCharacter = null;
+            
+            // 返回开始界面
+            switchScreen('end-screen', 'start-screen');
+        });
+        
+        // 检查是否从游戏返回
+        const returnFromGame = localStorage.getItem('returnFromGame');
+        if (returnFromGame === 'true') {
+            // 清除标记
+            localStorage.removeItem('returnFromGame');
+            
+            // 获取角色ID
+            const characterId = localStorage.getItem('characterId');
+            if (characterId) {
+                // 从localStorage加载角色数据
+                const characterData = loadCharacter();
+                
+                // 创建新的Character实例
+                if (characterData) {
+                    const character = new Character(
+                        characterData.id, 
+                        characterData.name, 
+                        characterData.avatarId,
+                        characterData.score,
+                        characterData.completedScenes,
+                        characterData.unlockedScenes,
+                        characterData.awards
+                    );
+                    
+                    // 显示场景选择
+                    setTimeout(() => {
+                        switchScreen('start-screen', 'scene-select');
+                        renderScenes(character);
+                    }, 100);
+                }
+            }
+        }
+        
+        // 检查URL参数
+        const urlParams = new URLSearchParams(window.location.search);
+        const screenParam = urlParams.get('screen');
+        if (screenParam === 'scene-select') {
+            // 从localStorage加载角色
+            const characterJson = localStorage.getItem('character');
+            if (characterJson) {
+                const character = JSON.parse(characterJson);
                 setTimeout(() => {
                     switchScreen('start-screen', 'scene-select');
                     renderScenes(character);
                 }, 100);
             }
         }
+        
+        console.log('初始化完成');
+    } catch (error) {
+        console.error('初始化过程出错:', error);
     }
-    
-    // 检查URL参数
-    const urlParams = new URLSearchParams(window.location.search);
-    const screenParam = urlParams.get('screen');
-    if (screenParam === 'scene-select') {
-        // 从localStorage加载角色
-        const characterJson = localStorage.getItem('character');
-        if (characterJson) {
-            const character = JSON.parse(characterJson);
-            setTimeout(() => {
-                switchScreen('start-screen', 'scene-select');
-                renderScenes(character);
-            }, 100);
-        }
-    }
-    
-    console.log('初始化完成');
 });
 
 // 界面切换函数
@@ -192,7 +209,7 @@ function switchScreen(fromId, toId) {
 
 // 显示奖项下拉菜单
 function showAwardsModal(character) {
-    console.log('显示奖项菜单'); // 调试日志
+    console.log('显示奖项菜单-main.js'); // 调试日志
     
     // 检查是否已存在奖项下拉菜单
     const existingDropdown = document.querySelector('.awards-dropdown');

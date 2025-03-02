@@ -372,172 +372,39 @@
 
 /* 电动街头游戏样式 */
 .electric-street-game {
-    width: 100%;
-    height: 100vh; /* 使用视窗高度单位覆盖整个页面 */
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
-}
-
-.electric-street-game .game-area {
-    flex: 1;
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-
-.electric-street-game .city-background {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('../assets/games/city-background.jpg');
-    background-size: cover;
-    background-position: center center;
-    z-index: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
 }
 
-/* 移除天空和道路元素的样式，直接使用背景图 */
-.electric-street-game .sky,
-.electric-street-game .road {
-    display: none;
+/* 确保游戏容器占满整个视口 */
+#game-container {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
 
-/* 悬浮式游戏状态显示 */
-.electric-street-game .game-stats-floating {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    display: flex;
-    gap: 20px;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 10px 15px;
-    border-radius: 10px;
-    font-weight: bold;
-    z-index: 100;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-}
-
-/* 调整控制按钮位置 */
-.electric-street-game .controls {
-    position: fixed;
-    bottom: 30px;
-    left: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    z-index: 100;
-}
-
-.electric-street-game .action-btn {
-    background-color: #3498db;
+/* 按钮样式 */
+.action-btn {
+    background-color: #2ecc71;
     color: white;
     border: none;
     padding: 12px 25px;
-    border-radius: 30px; /* 圆形按钮 */
-    font-size: 1.1rem;
+    border-radius: 8px;
+    font-size: 16px;
     cursor: pointer;
-    font-weight: bold;
-    transition: all 0.3s;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
 }
 
-.electric-street-game .action-btn:hover {
-    background-color: #2980b9;
+.action-btn:hover {
+    background-color: #27ae60;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-}
-
-/* 调整汽车位置和样式 */
-.electric-street-game .car {
-    position: absolute;
-    width: 400px; /* 稍微放大汽车尺寸 */
-    height: 150px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    transition: all 0.5s;
-    cursor: pointer;
-    z-index: 10;
-    transform: rotate(-10deg);
-}
-
-.electric-street-game .gas-car {
-    background-image: url('../assets/games/gas-car.png');
-}
-
-.electric-street-game .ev-car {
-    background-image: url('../assets/games/ev-car.png');
-}
-
-.electric-street-game .ev-car.low-battery {
-    opacity: 0.7;
-    filter: grayscale(0.8);
-    background-color: #95a5a6;
-    transition: all 0.5s ease-in-out;
-}
-
-.electric-street-game .ev-car.charged {
-    opacity: 1;
-    filter: none;
-    background-color: #2ecc71;
-    animation: chargePulse 2s;
-}
-
-@keyframes chargePulse {
-    0% { transform: scale(1); box-shadow: 0 0 0 rgba(46, 204, 113, 0); }
-    50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(46, 204, 113, 0.7); }
-    100% { transform: scale(1); box-shadow: 0 0 5px rgba(46, 204, 113, 0.3); }
-}
-
-.electric-street-game .fade-out {
-    opacity: 0;
-    transform: translateX(-50px);
-}
-
-.electric-street-game .game-area.completed {
-    animation: completion 2s;
-}
-
-@keyframes completion {
-    0% { filter: brightness(1); }
-    50% { filter: brightness(1.5); }
-    100% { filter: brightness(1); }
-}
-
-/* 移除不需要的充电桩样式代码 */
-.electric-street-game .charger,
-.electric-street-game .charger::before,
-.electric-street-game .charger::after {
-    display: none;
-}
-
-/* 简化游戏样式 */
-.electric-street-game .game-area {
-    min-height: 400px; /* 稍微增加游戏区域高度，提供更好的视觉体验 */
-}
-
-/* 优化汽车动画效果 */
-.electric-street-game .ev-car.low-battery {
-    opacity: 0.7;
-    filter: grayscale(0.8);
-    background-color: #95a5a6;
-    transition: all 0.5s ease-in-out;
-}
-
-.electric-street-game .ev-car.charged {
-    opacity: 1;
-    filter: none;
-    background-color: #2ecc71;
-    animation: chargePulse 2s;
-}
-
-@keyframes chargePulse {
-    0% { transform: scale(1); box-shadow: 0 0 0 rgba(46, 204, 113, 0); }
-    50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(46, 204, 113, 0.7); }
-    100% { transform: scale(1); box-shadow: 0 0 5px rgba(46, 204, 113, 0.3); }
 }
 
 /* 如果游戏在iframe中，可能需要设置iframe的背景 */

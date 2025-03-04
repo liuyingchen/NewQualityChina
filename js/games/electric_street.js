@@ -50,11 +50,17 @@ function initElectricStreetGame(container, character) {
         gameContainer.style.overflow = 'hidden';
         gameContainer.style.zIndex = '0';
         
+        
         // 修改HTML模板，移除任何onclick属性
         gameContainer.innerHTML = `
-            <div class="electric-street-game">
+            <div class="electric-street-game" style="
+                width: 100%;
+                height: 100%; /* 或其他适当的高度 */
+                position: relative;
+                overflow: hidden;
+            ">
                 <!-- 游戏区域 -->
-                <div class="game-area" id="game-area" style="
+                 <div class="game-area" id="game-area" style="
                     position: fixed;
                     top: 0;
                     left: 0;
@@ -67,15 +73,15 @@ function initElectricStreetGame(container, character) {
                     z-index: 0;
                 ">
                     <div class="game-content">
-                        <!-- 添加两辆车 -->
+                        <!-- 添加四辆车 -->
                         <div class="car-container" id="car1-container" style="
                             position: absolute;
                             left: 20%;
-                            bottom: 30%;
-                            width: 120px;
-                            height: 80px;
+                            bottom: 10%;
+                            width: 340px;
+                            height: 200px;
                             cursor: pointer;
-                            z-index: 2;
+                            z-index: 1000;
                         ">
                             <img src="assets/games/car1.png" id="car1" style="width: 100%; height: auto;">
                         </div>
@@ -83,13 +89,40 @@ function initElectricStreetGame(container, character) {
                         <div class="car-container" id="car2-container" style="
                             position: absolute;
                             right: 30%;
-                            bottom: 25%;
-                            width: 140px;
-                            height: 90px;
+                            bottom: 15%;
+                            width: 240px;
+                            height: 150px;
                             cursor: pointer;
-                            z-index: 1;
+                            z-index: 1000;
                         ">
                             <img src="assets/games/car2.png" id="car2" style="width: 100%; height: auto;">
+                        </div>
+                        
+                        <!-- 新增的两辆车 -->
+                        <div class="car-container" id="car4-container" style="
+                            position: absolute;
+                            left: 5%;
+                            bottom: 1%;
+                            width: 240px;
+                            height: 160px;
+                            cursor: pointer;
+                            z-index: 1000;
+                        ">
+                            <img src="assets/games/car4.png" id="car4" style="width: 100%; height: auto;">
+                        </div>
+                        
+                       
+                        
+                        <div class="car-container" id="car6-container" style="
+                            position: absolute;
+                            left: 40%;
+                            bottom: 20%;
+                            width: 250px;
+                            height: 100px;
+                            cursor: pointer;
+                            z-index: 1000;
+                        ">
+                            <img src="assets/games/car6.png" id="car6" style="width: 100%; height: auto;">
                         </div>
                     </div>
                 </div>
@@ -175,12 +208,12 @@ function initElectricStreetGame(container, character) {
                 
                 <!-- 积分卡片 -->
                 <div class="score-display" style="position:fixed;top:15px;right:15px;background-color:rgba(255,255,255,0.9);border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.2);padding:12px;z-index:10000;">
-                    <div style="font-size:16px;font-weight:bold;color:#333;margin-bottom:10px;">积分: <span id="game-score">${character.score}</span></div>
+                    <div style="font-size:16px;font-weight:bold;color:#333;margin-bottom:10px;">Points: <span id="game-score">${character.score}</span></div>
                     <button id="view-awards-btn" style="background-color:#3498db;color:white;border:none;padding:8px 15px;border-radius:8px;font-size:14px;cursor:pointer;width:100%;">查看奖项</button>
                 </div>
                 
                  <!-- 返回按钮 - 修改为使用.back-button类 -->
-         <button id="back-to-scene" class="back-button game-back-button">返回</button>
+         <button id="back-to-scene" class="back-button game-back-button">BACK</button>
             </div>
         `;
         
@@ -198,20 +231,32 @@ function initElectricStreetGame(container, character) {
 
 // 游戏逻辑
 function initElectricStreetGameLogic(character) {
-    // 游戏状态
+    // 初始化游戏状态
     const gameState = {
         selectedTool: null,
-        car1Converted: false,
-        car2Converted: false,
+        convertedCars: 0,
         gameCompleted: false,
-        progress: 0
+        totalCars: 4, // 更新为5辆车
+        carStatus: {
+            car1: false,
+            car2: false,
+            car4: false,
+        
+            car6: false
+        }
     };
     
     // 获取DOM元素
     const car1Container = document.getElementById('car1-container');
     const car2Container = document.getElementById('car2-container');
+    const car4Container = document.getElementById('car4-container');
+    
+    const car6Container = document.getElementById('car6-container');
     const car1 = document.getElementById('car1');
     const car2 = document.getElementById('car2');
+    const car4 = document.getElementById('car4');
+    
+    const car6 = document.getElementById('car6');
     const tool1 = document.getElementById('tool1');
     const tool2 = document.getElementById('tool2');
     const statusText = document.getElementById('status-text');
@@ -247,7 +292,7 @@ function initElectricStreetGameLogic(character) {
     
     // 汽车点击事件
     car1Container.addEventListener('click', () => {
-        if (gameState.car1Converted) {
+        if (gameState.carStatus.car1) {
             statusText.textContent = '这辆车已经改造完成了';
             return;
         }
@@ -262,7 +307,7 @@ function initElectricStreetGameLogic(character) {
     });
     
     car2Container.addEventListener('click', () => {
-        if (gameState.car2Converted) {
+        if (gameState.carStatus.car2) {
             statusText.textContent = '这辆车已经改造完成了';
             return;
         }
@@ -276,6 +321,39 @@ function initElectricStreetGameLogic(character) {
         convertCar(car2, 'car2');
     });
     
+    // 新增三辆车的点击事件
+    car4Container.addEventListener('click', () => {
+        if (gameState.carStatus.car4) {
+            statusText.textContent = '这辆车已经改造完成了';
+            return;
+        }
+        
+        if (!gameState.selectedTool) {
+            statusText.textContent = '请先选择一个工具';
+            return;
+        }
+        
+        // 转换汽车
+        convertCar(car4, 'car4');
+    });
+    
+  
+    
+    car6Container.addEventListener('click', () => {
+        if (gameState.carStatus.car6) {
+            statusText.textContent = '这辆车已经改造完成了';
+            return;
+        }
+        
+        if (!gameState.selectedTool) {
+            statusText.textContent = '请先选择一个工具';
+            return;
+        }
+        
+        // 转换汽车
+        convertCar(car6, 'car6');
+    });
+    
     // 转换汽车函数
     function convertCar(carElement, carId) {
         // 显示转换动画
@@ -286,7 +364,7 @@ function initElectricStreetGameLogic(character) {
         setTimeout(() => {
             // 替换为电动车图片
             try {
-                carElement.src = `assets/games/electric_${carId}.png`;
+                carElement.src = `assets/games/${carId}-e.png`;
             } catch (e) {
                 // 如果图片不存在，使用CSS滤镜模拟电动车效果
                 carElement.style.filter = 'hue-rotate(90deg) brightness(1.2)';
@@ -295,13 +373,9 @@ function initElectricStreetGameLogic(character) {
             carElement.style.transform = 'scale(1)';
             
             // 更新游戏状态
-            if (carId === 'car1') {
-                gameState.car1Converted = true;
-                statusText.textContent = '第一辆车改造成功！';
-            } else {
-                gameState.car2Converted = true;
-                statusText.textContent = '第二辆车改造成功！';
-            }
+            gameState.carStatus[carId] = true;
+            gameState.convertedCars++;
+            statusText.textContent = `成功改造了一辆汽车！(${gameState.convertedCars}/${gameState.totalCars})`;
             
             // 更新进度
             updateProgress();
@@ -317,19 +391,21 @@ function initElectricStreetGameLogic(character) {
     
     // 更新进度条
     function updateProgress() {
-        let completedCount = 0;
-        if (gameState.car1Converted) completedCount++;
-        if (gameState.car2Converted) completedCount++;
+        const progressPercentage = (gameState.convertedCars / gameState.totalCars) * 100;
+        document.getElementById('progress-bar').style.width = `${progressPercentage}%`;
         
-        gameState.progress = (completedCount / 2) * 100;
-        progressBar.style.width = `${gameState.progress}%`;
+        // 检查游戏是否完成
+        if (gameState.convertedCars === gameState.totalCars) {
+            document.getElementById('status-text').textContent = '恭喜！所有汽车都已改造完成！';
+            // 这里可以添加游戏完成的奖励逻辑
+        }
     }
     
     // 检查游戏是否完成
     function checkGameCompletion() {
-        console.log('gameState finish:', gameState.car1Converted);
-        if (gameState.car1Converted && gameState.car2Converted && !gameState.gameCompleted) {
-            gameState.gameCompleted = true;
+        console.log('gameState finish:', gameState.convertedCars);
+        if (gameState.convertedCars === gameState.totalCars && !gameState.gameCompleted) {
+            gameComplete = true;
             
             // 移除灰度滤镜，使场景变亮
             gameArea.style.filter = 'grayscale(0%) brightness(1.2)';
@@ -386,7 +462,7 @@ function initElectricStreetGameLogic(character) {
         completionAnim.style.zIndex = '1000';
         completionAnim.style.opacity = '0';
         completionAnim.style.transition = 'all 0.5s ease';
-        completionAnim.textContent = '任务完成！+50积分';
+        completionAnim.textContent = 'Finished！+50Points';
         
         document.body.appendChild(completionAnim);
         
@@ -407,11 +483,11 @@ function initElectricStreetGameLogic(character) {
     // 返回按钮功能
     backButton.addEventListener('click', () => {
         // 如果游戏未完成，给予部分积分
-        if (!gameState.gameCompleted && gameState.progress > 0) {
-            const partialPoints = Math.floor(25 * (gameState.progress / 100));
+        if (!gameState.gameCompleted && gameState.convertedCars > 0) {
+            const partialPoints = Math.floor(25 * (gameState.convertedCars / gameState.totalCars));
             character.addScore(partialPoints);
             saveCharacter(character);
-            alert(`游戏未完成，获得${partialPoints}积分。完成游戏可获得更多积分！`);
+            //alert(`游戏未完成，获得${partialPoints}积分。完成游戏可获得更多积分！`);
         }
         
         // 恢复游戏场景的原始内容
@@ -479,7 +555,7 @@ function initElectricStreetGameLogic(character) {
                     
                     dropdownContent += `
                         <div class="award-item">
-                            <strong>${sceneName}</strong> - ${award.points}积分 - ${award.name}
+                            <strong>${sceneName}</strong> - ${award.points}Points
                         </div>
                     `;
                 });
@@ -498,7 +574,7 @@ function initElectricStreetGameLogic(character) {
             dropdown.style.backgroundColor = 'white';
             dropdown.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
             dropdown.style.borderRadius = '5px';
-            dropdown.style.zIndex = '10000';
+            dropdown.style.zIndex = '100';
             dropdown.style.width = '250px';
             dropdown.style.marginTop = '5px';
             
@@ -556,7 +632,7 @@ window.showAwardsModal = function(character) {
             
             dropdownContent += `
                 <div class="award-item">
-                    <strong>${sceneName}</strong> - ${award.points}积分 - ${award.name}
+                    <strong>${sceneName}</strong> - ${award.points}Points
                 </div>
             `;
         });

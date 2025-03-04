@@ -58,7 +58,10 @@
     }
     
     .game-area {
-        height: 300px;
+        height: 100vh !important; /* 使用 !important 覆盖其他样式 */
+        width: 100vw !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
     
     .instructions {
@@ -127,4 +130,14 @@
     #game-container {
         min-height: 600px;
     }
+}
+
+
+
+/* 添加电动街道游戏特定样式 */
+.electric-street-game .game-area {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    overflow: hidden !important;
 }

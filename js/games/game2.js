@@ -91,7 +91,7 @@ function createGameUI(container, character) {
     scoreDisplay.style.zIndex = '1000';
     
     scoreDisplay.innerHTML = `
-        <div style="font-size:16px;font-weight:bold;color:#333;margin-bottom:10px;">积分: <span id="game-score">${character.score}</span></div>
+        <div style="font-size:16px;font-weight:bold;color:#333;margin-bottom:10px;">Points: <span id="game-score">${character.score}</span></div>
         <button id="view-awards-btn" style="background-color:#3498db;color:white;border:none;padding:8px 15px;border-radius:8px;font-size:14px;cursor:pointer;width:100%;">查看奖项</button>
     `;
     
@@ -127,14 +127,14 @@ function createGameUI(container, character) {
             const partialPoints = Math.floor((placedPieces / totalPieces) * 30);
 
             character.addAward({
-                name: "风能拼图大师",
-                description: "部分风能实验室拼图",
+                name: "Smart Factory",
+                description: "Smart Factory",
                 points: partialPoints,
-                sceneId: 2 // 假设风能实验室是场景2
+                sceneId: 3 // 假设风能实验室是场景2
             });
 
             saveCharacter(character);
-            alert(`你获得了 ${partialPoints} 积分！`);
+           // alert(`你获得了 ${partialPoints} 积分！`);
         }
         
         // 恢复游戏场景的原始内容
@@ -197,7 +197,7 @@ function createGameUI(container, character) {
                     
                     dropdownContent += `
                         <div class="award-item">
-                            <strong>${sceneName}</strong> - ${award.points}积分 - ${award.name}
+                            <strong>${sceneName}</strong> - ${award.points}Points 
                         </div>
                     `;
                 });
@@ -456,13 +456,11 @@ function createPuzzleGame(container, character) {
             
             // 添加奖项
             character.addAward({
-                name: "风能拼图大师",
-                description: "成功完成风能实验室拼图",
+                name: "Smart Factory",
+                description: "Smart Factory",
                 points: earnedPoints,
-                sceneId: 2 // 假设风能实验室是场景2
+                sceneId: 3 // 假设风能实验室是场景2
             });
-
-            
             
             // 标记场景完成
             character.completeScene(2);
@@ -493,7 +491,56 @@ function createPuzzleGame(container, character) {
             } else {
                 console.log('saveCharacter 函数未定义，跳过保存');
             }
+            
+            // 添加成功信息和返回按钮
+            const gameContainer = document.getElementById('puzzle-game-container');
+            const successElement = document.createElement('div');
+            successElement.className = 'game-complete';
+            successElement.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);background:rgba(0,0,0,0.7);color:white;padding:30px;border-radius:15px;text-align:center;min-width:300px;z-index:20;';
+            
+            successElement.innerHTML = `
+                <h2 style="margin-top:0;color:#2ecc71;">Congratulations! Puzzle completed!</h2>
+                <div style="margin:20px 0;font-size:18px;">
+                    <p>Points: <span style="font-weight:bold;color:#f1c40f;">${earnedPoints}</span></p>
+                </div>
+                <div style="margin-top:30px;">
+                    <button id="continue-btn" style="background:#2ecc71;color:white;border:none;padding:12px 25px;border-radius:30px;font-size:16px;cursor:pointer;transition:all 0.3s;">BACK</button>
+                </div>
+            `;
+            
+            gameContainer.appendChild(successElement);
+            
+            // 添加返回按钮事件（参考stacking.js的实现）
+            document.getElementById('continue-btn').addEventListener('click', () => {
+                // 保存角色数据
+                saveCharacter(character);
+                
+                // 恢复游戏场景的原始内容
+                const gameScreen = document.getElementById('game-screen');
+                if (gameScreen) {
+                    const originalContent = gameScreen.getAttribute('data-original-content');
+                    if (originalContent) {
+                        gameScreen.innerHTML = originalContent;
+                    }
+                }
+                
+                // 使用switchScreen切换回场景选择界面
+                if (typeof switchScreen === 'function') {
+                    switchScreen('game-screen', 'scene-select');
+                    
+                    // 重新渲染场景
+                    if (typeof renderScenes === 'function') {
+                        renderScenes(character);
+                    }
+                } else {
+                    console.error('switchScreen函数不存在');
+                    // 备用方案：重新加载页面
+                    window.location.reload();
+                }
+            });
         }, 1000);
+
+        
     }
 }
 

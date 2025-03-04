@@ -51,26 +51,63 @@ function initStackingGame(container, character) {
         gameContainer.style.padding = '0';
         gameContainer.style.overflow = 'hidden';
         
-        // 添加背景图
-        gameContainer.style.background = "url('../assets/games/stack-bg.png') no-repeat center center";
+        //添加背景图 - 完整解决方案
+        gameContainer.style.background = "none"; // 先清除可能存在的背景
+        gameContainer.style.backgroundColor = "#000000"; // 添加背景色，避免空白区域
+        gameContainer.style.backgroundImage = "url('../assets/games/stack-bg.png')";
+        gameContainer.style.backgroundRepeat = "no-repeat";
+        gameContainer.style.backgroundPosition = "center center";
         gameContainer.style.backgroundSize = "cover";
+        gameContainer.style.display = "flex"; // 确保容器使用flex布局
+        gameContainer.style.justifyContent = "center"; // 水平居中内容
+        gameContainer.style.alignItems = "center"; // 垂直居中内容
         
         // 添加游戏元素
         gameContainer.innerHTML = `
-            <div class="stacking-game">
+            <div style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                z-index: 0;
+            ">
+                <img src="../assets/games/stack-bg.png" style="
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    object-position: center;
+                ">
+            </div>
+            
+         
+            <div class="stacking-game" style="
+                position: relative;
+                z-index: 1;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                overflow: hidden; /* 防止内容溢出 */
+            ">
                 <div class="tower-container" id="tower-container">
                     <div class="base-block"></div>
                     <div class="moving-block" id="moving-block"></div>
                 </div>
                 
+
                 <div class="minimal-controls" style="
-                position: fixed; 
-                bottom: 10vh;           /* 距离底部10%的视口高度 */
-                left: 50%; 
-                transform: translateX(-50%); 
-                z-index: 1000;
-                text-align: center;
-            ">
+                    position: absolute; /* 改为absolute而不是fixed */
+                    bottom: 10%;
+                    left: 50%; 
+                    transform: translateX(-50%); 
+                    z-index: 1000;
+                    text-align: center;
+                ">
+
                 <button id="place-block" style="
                     padding: 12px 30px; 
                     font-size: 18px; 
@@ -80,7 +117,7 @@ function initStackingGame(container, character) {
                     border-radius: 8px; 
                     cursor: pointer;
                     box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-                ">放置方块</button>
+                ">BUILD</button>
             </div>
                 
                 <div class="minimal-stats">
@@ -88,13 +125,14 @@ function initStackingGame(container, character) {
                         <div class="mini-progress-bar" id="progress-bar"></div>
                         <span id="progress-text">0%</span>
                     </div>
-                    <span id="current-level">1</span>层 | 
-                    <span id="current-score">0</span>分
+                    <span id="current-level"></span>
+                    <span id="current-score"></span>
+                    
                 </div>
                 
                 <!-- 积分卡片 -->
                 <div class="score-display" style="position:fixed;top:15px;right:15px;background-color:rgba(255,255,255,0.9);border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.2);padding:12px;z-index:10000;">
-                    <div style="font-size:16px;font-weight:bold;color:#333;margin-bottom:10px;">积分: <span id="game-score">${character.score}</span></div>
+                    <div style="font-size:16px;font-weight:bold;color:#333;margin-bottom:10px;">Points: <span id="game-score">${character.score}</span></div>
                     <button id="view-awards-btn" style="background-color:#3498db;color:white;border:none;padding:8px 15px;border-radius:8px;font-size:14px;cursor:pointer;width:100%;">查看奖项</button>
                 </div>
                 
@@ -155,9 +193,9 @@ function initStackingGame(container, character) {
         // 保存角色分数
         if (score > 0) {
             const partialPoints = Math.floor(score * 0.5);
-            character.addScore(partialPoints);
+            //character.addScore(partialPoints); 不进行记录分数
             saveCharacter(character);
-            alert(`游戏未完成，获得${partialPoints}积分。完成游戏可获得更多积分！`);
+            //alert(`游戏未完成，获得${partialPoints}积分。完成游戏可获得更多积分！`);
         }
         
         // 恢复游戏场景的原始内容
@@ -224,7 +262,7 @@ function initStackingGame(container, character) {
                     
                     dropdownContent += `
                         <div class="award-item">
-                            <strong>${sceneName}</strong> - ${award.points}积分 - ${award.name}
+                            <strong>${sceneName}</strong> - ${award.points}Points - ${award.name}
                         </div>
                     `;
                 });
@@ -232,94 +270,94 @@ function initStackingGame(container, character) {
 
         
             
-            dropdownContent += `</div>`;
-            dropdown.innerHTML = dropdownContent;
-            
-            // 将下拉菜单添加到按钮的父元素
-            viewAwardsBtn.parentNode.appendChild(dropdown);
-            
-            // 添加样式
-            dropdown.style.position = 'absolute';
-            dropdown.style.top = '100%';
-            dropdown.style.right = '0';
-            dropdown.style.backgroundColor = 'white';
-            dropdown.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
-            dropdown.style.borderRadius = '5px';
-            dropdown.style.zIndex = '10000';
-            dropdown.style.width = '250px';
-            dropdown.style.marginTop = '5px';
-            
-            // 添加点击其他区域关闭下拉菜单的功能
-            document.addEventListener('click', function closeDropdown(e) {
-                if (!dropdown.contains(e.target) && e.target !== viewAwardsBtn) {
-                    dropdown.remove();
-                    document.removeEventListener('click', closeDropdown);
-                }
+                dropdownContent += `</div>`;
+                dropdown.innerHTML = dropdownContent;
+                
+                // 将下拉菜单添加到按钮的父元素
+                viewAwardsBtn.parentNode.appendChild(dropdown);
+                
+                // 添加样式
+                dropdown.style.position = 'absolute';
+                dropdown.style.top = '100%';
+                dropdown.style.right = '0';
+                dropdown.style.backgroundColor = 'white';
+                dropdown.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+                dropdown.style.borderRadius = '5px';
+                dropdown.style.zIndex = '10000';
+                dropdown.style.width = '250px';
+                dropdown.style.marginTop = '5px';
+                
+                // 添加点击其他区域关闭下拉菜单的功能
+                document.addEventListener('click', function closeDropdown(e) {
+                    if (!dropdown.contains(e.target) && e.target !== viewAwardsBtn) {
+                        dropdown.remove();
+                        document.removeEventListener('click', closeDropdown);
+                    }
+                });
             });
-        });
-    } else {
-        console.error('未找到查看奖项按钮');
-    }
-    
-    // 开始方块移动动画
-    startBlockAnimation();
-    
-    // 放置方块按钮事件
-    placeBlockBtn.addEventListener('click', () => {
-        console.log('放置按钮被点击'); // 调试日志
-        placeBlock();
-    });
-    
-    // 空格键放置
-    document.addEventListener('keydown', (e) => {
-        if (e.code === 'Space' && !gameOver) {
-            placeBlock();
+        } else {
+            console.error('未找到查看奖项按钮');
         }
-    });
-    
-    // 方块移动动画
-    function startBlockAnimation() {
-        const containerWidth = towerContainer.offsetWidth;
-        const blockWidth = parseInt(movingBlock.style.width);
         
-        function animate() {
-            if (gameOver) return;
-            
-            let currentLeft = parseInt(movingBlock.style.left) || 0;
-            
-            // 改变方向
-            if (currentLeft + blockWidth >= containerWidth) {
-                blockDirection = -1;
-            } else if (currentLeft <= 0) {
-                blockDirection = 1;
+        // 开始方块移动动画
+        startBlockAnimation();
+        
+        // 放置方块按钮事件
+        placeBlockBtn.addEventListener('click', () => {
+            console.log('放置按钮被点击'); // 调试日志
+            placeBlock();
+        });
+        
+        // 空格键放置
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && !gameOver) {
+                placeBlock();
             }
+        });
+        
+        // 方块移动动画
+        function startBlockAnimation() {
+            const containerWidth = towerContainer.offsetWidth;
+            const blockWidth = parseInt(movingBlock.style.width);
             
-            // 移动方块
-            currentLeft += blockSpeed * blockDirection;
-            movingBlock.style.left = `${currentLeft}px`;
+            function animate() {
+                if (gameOver) return;
+                
+                let currentLeft = parseInt(movingBlock.style.left) || 0;
+                
+                // 改变方向
+                if (currentLeft + blockWidth >= containerWidth) {
+                    blockDirection = -1;
+                } else if (currentLeft <= 0) {
+                    blockDirection = 1;
+                }
+                
+                // 移动方块
+                currentLeft += blockSpeed * blockDirection;
+                movingBlock.style.left = `${currentLeft}px`;
+                
+                animationId = requestAnimationFrame(animate);
+            }
             
             animationId = requestAnimationFrame(animate);
         }
         
-        animationId = requestAnimationFrame(animate);
-    }
-    
-    // 放置方块
-    function placeBlock() {
-        console.log('执行 placeBlock 函数'); // 调试日志
-        if (gameOver) {
-            console.log('游戏已结束，无法放置方块');
-            return;
-        }
-        
-        // 停止动画
-        cancelAnimationFrame(animationId);
-        
-        // 获取当前方块位置和尺寸
-        const currentLeft = parseInt(movingBlock.style.left) || 0;
-        const currentBottom = parseInt(movingBlock.style.bottom) || 22;
-        const currentWidth = parseInt(movingBlock.style.width) || 140;
-        console.log('当前方块位置:', currentLeft, currentBottom, currentWidth);
+        // 放置方块
+        function placeBlock() {
+            console.log('执行 placeBlock 函数'); // 调试日志
+            if (gameOver) {
+                console.log('游戏已结束，无法放置方块');
+                return;
+            }
+            
+            // 停止动画
+            cancelAnimationFrame(animationId);
+            
+            // 获取当前方块位置和尺寸
+            const currentLeft = parseInt(movingBlock.style.left) || 0;
+            const currentBottom = parseInt(movingBlock.style.bottom) || 22;
+            const currentWidth = parseInt(movingBlock.style.width) || 140;
+            console.log('当前方块位置:', currentLeft, currentBottom, currentWidth);
 
          // 检查第一个方块是否与基础方块重叠
          if (currentLevel === 1) {
@@ -505,7 +543,7 @@ function initStackingGame(container, character) {
         cancelAnimationFrame(animationId);
         
         // 计算获得的积分
-        const basePoints = 50;
+        const basePoints = 0;
         const earnedPoints = success ? (basePoints + score) : Math.floor((basePoints + score) / 2);
         
         // 添加积分
@@ -523,15 +561,15 @@ function initStackingGame(container, character) {
             }
             
             character.addAward({
-                name: "太阳能塔建造大师",
-                description: "成功完成太阳能创新中心的叠叠乐挑战",
+                name: "Sunlit Gobi",
+                description: "Finish Sunlit Gobi",
                 points: earnedPoints,
                 sceneId: 1
             });
         } else {
             character.addAward({
-                name: "初级建筑师",
-                description: "参与了太阳能创新中心的叠叠乐挑战",
+                name: "Sunlit Gobi",
+                description: "Play Sunlit Gobi",
                 points: earnedPoints,
                 sceneId: 1
             });
@@ -544,15 +582,14 @@ function initStackingGame(container, character) {
         const gameContainer = document.getElementById('game-container');
         gameContainer.innerHTML = `
             <div class="game-complete" style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);background:rgba(0,0,0,0.7);color:white;padding:30px;border-radius:15px;text-align:center;min-width:300px;">
-                <h2 style="margin-top:0;color:#2ecc71;">${success ? '恭喜！你成功完成了叠叠乐挑战' : '游戏结束！塔楼倒塌了'}</h2>
+                <h2 style="margin-top:0;color:#2ecc71;">${success ? 'congratulations!' : 'Defeat!'}</h2>
                 <div style="margin:20px 0;font-size:18px;">
-                    <p>最终层数: <span style="font-weight:bold;color:#3498db;">${currentLevel - 1}</span></p>
-                    <p>游戏得分: <span style="font-weight:bold;color:#f1c40f;">${score}</span></p>
-                    <p>获得积分: <span style="font-weight:bold;color:#2ecc71;">+${earnedPoints}</span></p>
-                    <p>当前总积分: <span style="font-weight:bold;color:#e74c3c;">${character.score}</span></p>
+                    
+                    <p>Points: <span style="font-weight:bold;color:#f1c40f;">${earnedPoints}</span></p>
+                   
                 </div>
                 <div style="margin-top:30px;">
-                    <button id="continue-btn" style="background:#2ecc71;color:white;border:none;padding:12px 25px;border-radius:30px;font-size:16px;cursor:pointer;transition:all 0.3s;">返回场景</button>
+                    <button id="continue-btn" style="background:#2ecc71;color:white;border:none;padding:12px 25px;border-radius:30px;font-size:16px;cursor:pointer;transition:all 0.3s;">BACK</button>
                 </div>
             </div>
         `;
@@ -582,6 +619,16 @@ function initStackingGame(container, character) {
             }
         });
     }
+
+    // // 获取容器尺寸
+    // const container = document.getElementById('game-container');
+    // console.log('容器尺寸:', container.clientWidth, 'x', container.clientHeight);
+
+    // // 获取背景图片尺寸（如果使用的是HTML元素）
+    // const bgImg = document.querySelector('#game-container img');
+    // if (bgImg) {
+    //     console.log('图片尺寸:', bgImg.naturalWidth, 'x', bgImg.naturalHeight);
+    // }
 }
 
 // 确保showAwardsModal函数在全局作用域中可用
@@ -624,7 +671,7 @@ window.showAwardsModal = function(character) {
             
             dropdownContent += `
                 <div class="award-item">
-                    <strong>${sceneName}</strong> - ${award.points}积分 - ${award.name}
+                    <strong>${sceneName}</strong> - ${award.points}Points - ${award.name}
                 </div>
             `;
         });

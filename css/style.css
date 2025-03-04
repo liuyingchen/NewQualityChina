@@ -732,3 +732,42 @@ button:hover {
     from { opacity: 1; transform: translate(-50%, 0); }
     to { opacity: 0; transform: translate(-50%, -20px); }
 }
+
+/* 修改场景卡片样式 */
+.scene {
+    /* 保留原有样式 */
+    display: flex;
+    flex-direction: column;
+}
+
+/* 增大图片容器比例 */
+.scene-image-container {
+    flex: 4; /* 占据更多空间 */
+    overflow: hidden;
+}
+
+.scene-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 确保图片填满容器且不变形 */
+}
+
+/* 减小文字内容比例 */
+.scene-content {
+    flex: 1; /* 占据较少空间 */
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.scene-text h3 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-size: 1.2em; /* 可以适当减小标题字体 */
+}
+
+.scene-text p {
+    margin: 0;
+    font-size: 0.9em; /* 减小描述文字字体 */
+}

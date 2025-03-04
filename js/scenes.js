@@ -84,13 +84,14 @@ function renderScenes(character) {
         sceneElement.className = `scene ${isUnlocked ? 'unlocked' : 'locked'}`;
         sceneElement.dataset.id = scene.id;
         
-        // 在调试模式下移除所有锁定状态显示
+        // 修改HTML结构，增加图片容器类名以便于CSS控制
         sceneElement.innerHTML = `
-            <img src="${scene.image}" alt="${scene.name}">
+            <div class="scene-image-container">
+                <img src="${scene.image}" alt="${scene.name}">
+            </div>
             <div class="scene-content">
-                <div>
+                <div class="scene-text">
                     <h3>${scene.name}</h3>
-                    <p>${scene.description}</p>
                 </div>
                 <div class="scene-status">
                     ${(!isUnlocked && !canUnlock && !DEBUG_MODE) ? 

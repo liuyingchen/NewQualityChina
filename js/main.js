@@ -247,7 +247,7 @@ function showAwardsModal(character) {
             
             dropdownContent += `
                 <div class="award-item">
-                    <strong>${sceneName}</strong> - ${award.points}Points - ${award.name}
+                    <strong>${sceneName}</strong> - ${award.points}Points 
                 </div>
             `;
         });

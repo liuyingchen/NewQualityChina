@@ -262,7 +262,7 @@ function initStackingGame(container, character) {
                     
                     dropdownContent += `
                         <div class="award-item">
-                            <strong>${sceneName}</strong> - ${award.points}Points - ${award.name}
+                            <strong>${sceneName}</strong> - ${award.points}Points 
                         </div>
                     `;
                 });
@@ -420,6 +420,7 @@ function initStackingGame(container, character) {
         // 检查方块是否对齐
         if (currentLevel > 1) {
             const previousBlock = document.querySelector(`.placed-block:nth-last-child(2)`);
+            
             if (!previousBlock) {
                 console.error('找不到前一个方块');
                 return;
@@ -671,7 +672,7 @@ window.showAwardsModal = function(character) {
             
             dropdownContent += `
                 <div class="award-item">
-                    <strong>${sceneName}</strong> - ${award.points}Points - ${award.name}
+                    <strong>${sceneName}</strong> - ${award.points}Points 
                 </div>
             `;
         });

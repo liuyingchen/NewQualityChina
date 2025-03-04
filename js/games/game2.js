@@ -440,7 +440,7 @@ function createPuzzleGame(container, character) {
         }, 500);
         
         // 更新状态提示
-        document.getElementById('status-tip').textContent = '恭喜！拼图完成！';
+        document.getElementById('status-tip').textContent = 'Congratulations! Puzzle completed!';
         document.getElementById('status-tip').style.backgroundColor = 'rgba(46, 204, 113, 0.8)';
         
         // 添加积分和奖项
@@ -536,7 +536,7 @@ window.showAwardsModal = function(character) {
             
             dropdownContent += `
                 <div class="award-item">
-                    <strong>${sceneName}</strong> - ${award.points}积分 - ${award.name}
+                    <strong>${sceneName}</strong> - ${award.points}Points
                 </div>
             `;
         });

@@ -98,7 +98,6 @@ function initStackingGame(container, character) {
                     <div class="moving-block" id="moving-block"></div>
                 </div>
                 
-
                 <div class="minimal-controls" style="
                     position: absolute; /* 改为absolute而不是fixed */
                     bottom: 10%;
@@ -109,14 +108,19 @@ function initStackingGame(container, character) {
                 ">
 
                 <button id="place-block" style="
-                    padding: 12px 30px; 
-                    font-size: 18px; 
+                    padding: 8px 20px; 
+                    font-size: 16px; 
                     background-color: #2ecc71; 
                     color: white; 
                     border: none; 
-                    border-radius: 8px; 
+                    border-radius: 6px; 
                     cursor: pointer;
-                    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                    text-align: center; /* 确保文字水平居中 */
+                    line-height: 1; /* 确保文字垂直居中 */
+                    display: flex; /* 使用flex布局 */
+                    justify-content: center; /* 水平居中 */
+                    align-items: center; /* 垂直居中 */
                 ">BUILD</button>
             </div>
                 
@@ -137,7 +141,7 @@ function initStackingGame(container, character) {
                 </div>
                 
                 <!-- 返回按钮 -->
-                <button id="back-to-scene" class="back-button game-back-button">返回</button>
+                <button id="back-to-scene" class="back-button game-back-button">BACK</button>
             </div>
         `;
         
@@ -270,94 +274,94 @@ function initStackingGame(container, character) {
 
         
             
-                dropdownContent += `</div>`;
-                dropdown.innerHTML = dropdownContent;
-                
-                // 将下拉菜单添加到按钮的父元素
-                viewAwardsBtn.parentNode.appendChild(dropdown);
-                
-                // 添加样式
-                dropdown.style.position = 'absolute';
-                dropdown.style.top = '100%';
-                dropdown.style.right = '0';
-                dropdown.style.backgroundColor = 'white';
-                dropdown.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
-                dropdown.style.borderRadius = '5px';
-                dropdown.style.zIndex = '10000';
-                dropdown.style.width = '250px';
-                dropdown.style.marginTop = '5px';
-                
-                // 添加点击其他区域关闭下拉菜单的功能
-                document.addEventListener('click', function closeDropdown(e) {
-                    if (!dropdown.contains(e.target) && e.target !== viewAwardsBtn) {
-                        dropdown.remove();
-                        document.removeEventListener('click', closeDropdown);
-                    }
-                });
-            });
-        } else {
-            console.error('未找到查看奖项按钮');
-        }
-        
-        // 开始方块移动动画
-        startBlockAnimation();
-        
-        // 放置方块按钮事件
-        placeBlockBtn.addEventListener('click', () => {
-            console.log('放置按钮被点击'); // 调试日志
-            placeBlock();
-        });
-        
-        // 空格键放置
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' && !gameOver) {
-                placeBlock();
-            }
-        });
-        
-        // 方块移动动画
-        function startBlockAnimation() {
-            const containerWidth = towerContainer.offsetWidth;
-            const blockWidth = parseInt(movingBlock.style.width);
+            dropdownContent += `</div>`;
+            dropdown.innerHTML = dropdownContent;
             
-            function animate() {
-                if (gameOver) return;
-                
-                let currentLeft = parseInt(movingBlock.style.left) || 0;
-                
-                // 改变方向
-                if (currentLeft + blockWidth >= containerWidth) {
-                    blockDirection = -1;
-                } else if (currentLeft <= 0) {
-                    blockDirection = 1;
+            // 将下拉菜单添加到按钮的父元素
+            viewAwardsBtn.parentNode.appendChild(dropdown);
+            
+            // 添加样式
+            dropdown.style.position = 'absolute';
+            dropdown.style.top = '100%';
+            dropdown.style.right = '0';
+            dropdown.style.backgroundColor = 'white';
+            dropdown.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+            dropdown.style.borderRadius = '5px';
+            dropdown.style.zIndex = '10000';
+            dropdown.style.width = '250px';
+            dropdown.style.marginTop = '5px';
+            
+            // 添加点击其他区域关闭下拉菜单的功能
+            document.addEventListener('click', function closeDropdown(e) {
+                if (!dropdown.contains(e.target) && e.target !== viewAwardsBtn) {
+                    dropdown.remove();
+                    document.removeEventListener('click', closeDropdown);
                 }
-                
-                // 移动方块
-                currentLeft += blockSpeed * blockDirection;
-                movingBlock.style.left = `${currentLeft}px`;
-                
-                animationId = requestAnimationFrame(animate);
+            });
+        });
+    } else {
+        console.error('未找到查看奖项按钮');
+    }
+    
+    // 开始方块移动动画
+    startBlockAnimation();
+    
+    // 放置方块按钮事件
+    placeBlockBtn.addEventListener('click', () => {
+        console.log('放置按钮被点击'); // 调试日志
+        placeBlock();
+    });
+    
+    // 空格键放置
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && !gameOver) {
+            placeBlock();
+        }
+    });
+    
+    // 方块移动动画
+    function startBlockAnimation() {
+        const containerWidth = towerContainer.offsetWidth;
+        const blockWidth = parseInt(movingBlock.style.width);
+        
+        function animate() {
+            if (gameOver) return;
+            
+            let currentLeft = parseInt(movingBlock.style.left) || 0;
+            
+            // 改变方向
+            if (currentLeft + blockWidth >= containerWidth) {
+                blockDirection = -1;
+            } else if (currentLeft <= 0) {
+                blockDirection = 1;
             }
+            
+            // 移动方块
+            currentLeft += blockSpeed * blockDirection;
+            movingBlock.style.left = `${currentLeft}px`;
             
             animationId = requestAnimationFrame(animate);
         }
         
-        // 放置方块
-        function placeBlock() {
-            console.log('执行 placeBlock 函数'); // 调试日志
-            if (gameOver) {
-                console.log('游戏已结束，无法放置方块');
-                return;
-            }
-            
-            // 停止动画
-            cancelAnimationFrame(animationId);
-            
-            // 获取当前方块位置和尺寸
-            const currentLeft = parseInt(movingBlock.style.left) || 0;
-            const currentBottom = parseInt(movingBlock.style.bottom) || 22;
-            const currentWidth = parseInt(movingBlock.style.width) || 140;
-            console.log('当前方块位置:', currentLeft, currentBottom, currentWidth);
+        animationId = requestAnimationFrame(animate);
+    }
+    
+    // 放置方块
+    function placeBlock() {
+        console.log('执行 placeBlock 函数'); // 调试日志
+        if (gameOver) {
+            console.log('游戏已结束，无法放置方块');
+            return;
+        }
+        
+        // 停止动画
+        cancelAnimationFrame(animationId);
+        
+        // 获取当前方块位置和尺寸
+        const currentLeft = parseInt(movingBlock.style.left) || 0;
+        const currentBottom = parseInt(movingBlock.style.bottom) || 22;
+        const currentWidth = parseInt(movingBlock.style.width) || 140;
+        console.log('当前方块位置:', currentLeft, currentBottom, currentWidth);
 
          // 检查第一个方块是否与基础方块重叠
          if (currentLevel === 1) {

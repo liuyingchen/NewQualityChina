@@ -142,9 +142,18 @@ button:hover {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    background-image: url('../assets/games/energy-background.jpg'); /* 替换为你的背景图片路径 */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
+/* 调整开始按钮位置 */
 #start-btn {
+    position: absolute;
+    bottom: 20%; /* 从底部向上20%的位置 */
+    left: 50%;
+    transform: translateX(-50%); /* 水平居中 */
     font-size: 1.2rem;
     padding: 15px 30px;
 }

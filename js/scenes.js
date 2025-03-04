@@ -2,27 +2,27 @@
 const gameScenes = [
     {
         id: 1,
-        name: "太阳能创新中心",
-        description: "在这里体验太阳能技术的创新应用",
-        image: "assets/scenes/solar.jpg",
+        name: "Sunlit Gobi",
+        description: "Sunlit Gobi",
+        image: "assets/scenes/scene1.png",
         gameId: "stacking", // 对应叠叠乐游戏
         unlockScore: 0, // 初始解锁
         requiresSceneId: 0 // 不需要前置场景
     },
     {
         id: 2,
-        name: "风能实验室",
-        description: "探索风能技术的前沿应用",
-        image: "assets/scenes/wind.jpg",
+        name: "Electric Street",
+        description: "Electric Street",
+        image: "assets/scenes/scene2.png",
         gameId: "electric_street",
         unlockScore: 0, // 移除积分解锁
         requiresSceneId: 1 // 需要场景1完成才能解锁
     },
     {
         id: 3,
-        name: "智能电网控制中心",
-        description: "管理和优化能源分配",
-        image: "assets/scenes/grid.jpg",
+        name: "Smart Factory",
+        description: "Smart Factory",
+        image: "assets/scenes/scene3.png",
         gameId: "game2",
         unlockScore: 0, // 移除积分解锁
         requiresSceneId: 2 // 需要场景2完成才能解锁
@@ -47,7 +47,7 @@ function renderScenes(character) {
     }
     
     topRightControls.innerHTML = `
-        <div class="score-display">积分: <span id="player-score">${character.score}</span></div>
+        <div class="score-display">SCORES: <span id="player-score">${character.score}</span></div>
         <button id="view-awards">查看奖项</button>
     `;
     
@@ -94,7 +94,7 @@ function renderScenes(character) {
                 </div>
                 <div class="scene-status">
                     ${(!isUnlocked && !canUnlock && !DEBUG_MODE) ? 
-                        `<span class="lock-status">待解锁</span>` : 
+                        `<span class="lock-status">Unlock</span>` : 
                         ''
                     }
                 </div>

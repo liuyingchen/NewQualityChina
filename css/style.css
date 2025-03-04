@@ -276,6 +276,10 @@ button:hover {
     background: linear-gradient(-45deg, #f5f7fa, #c3cfe2, #e0eafc, #cfdef3);
     background-size: 400% 400%;
     animation: backgroundShift 15s ease infinite;
+    background-image: url('../assets/games/energy-bg.png'); /* 替换为你的背景图片路径 */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 /* 场景选择界面优化 */
@@ -285,6 +289,10 @@ button:hover {
     display: flex;
     flex-direction: column;
     padding-top: 70px; /* 为顶部标题留出空间 */
+    background-image: url('../assets/games/energy-bg.png'); /* 替换为你的背景图片路径 */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 /* 右上角积分和奖项按钮 */

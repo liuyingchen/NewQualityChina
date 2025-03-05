@@ -3,7 +3,7 @@ class Character {
         this.id = id;
         this.name = name;
         this.type = type; // 角色类型: 1=能源专家, 2=创新工程师
-        this.score = this.type === 1 ? 50 : 0; // 调整初始积分：能源专家50，创新工程师0
+        this.score = this.type === 1 ? 50 : 100; // 调整初始积分：能源专家50，创新工程师0
         this.awards = []; // 奖项数组
         this.unlockedScenes = [1]; // 初始解锁第一个场景
         this.completedScenes = []; // 新增：已完成的场景

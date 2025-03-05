@@ -211,6 +211,11 @@ function initElectricStreetGame(container, character) {
                     <div style="font-size:16px;font-weight:bold;color:#333;margin-bottom:10px;">Points: <span id="game-score">${character.score}</span></div>
                     <button id="view-awards-btn" style="background-color:#3498db;color:white;border:none;padding:8px 15px;border-radius:8px;font-size:14px;cursor:pointer;width:100%;">查看奖项</button>
                 </div>
+
+                <!-- 左下角角色信息 - 使用CSS类而不是内联样式 -->
+            <div class="player-info">
+                <img src="assets/characters/character${character.id}.png" alt="${character.name}" class="player-avatar">
+            </div>
                 
                  <!-- 返回按钮 - 修改为使用.back-button类 -->
          <button id="back-to-scene" class="back-button game-back-button">BACK</button>

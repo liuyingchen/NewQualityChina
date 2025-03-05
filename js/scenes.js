@@ -30,7 +30,7 @@ const gameScenes = [
 ];
 
 // 添加调试模式变量
-const DEBUG_MODE = true; // 设置为 true 时跳过所有解锁限制
+const DEBUG_MODE = false; // 设置为 true 时跳过所有解锁限制
 
 // 渲染场景选择界面
 function renderScenes(character) {

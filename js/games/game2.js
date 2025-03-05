@@ -109,10 +109,25 @@ function createGameUI(container, character) {
     statusTip.style.borderRadius = '20px';
     statusTip.style.zIndex = '1000';
     
+
+      // 创建左下角角色信息
+      const playerInfo = document.createElement('div');
+      playerInfo.className = 'player-info';
+      
+      // 添加角色头像
+      const playerAvatar = document.createElement('img');
+      playerAvatar.src = `assets/characters/character${character.id}.png`;
+      playerAvatar.alt = character.name || (character.id === 1 ? '能源专家' : '创新工程师');
+      playerAvatar.className = 'player-avatar';
+      
+      // 将头像添加到角色信息容器
+      playerInfo.appendChild(playerAvatar);
+
     // 添加UI元素到容器
     container.appendChild(backButton);
     container.appendChild(scoreDisplay);
     container.appendChild(statusTip);
+    container.appendChild(playerInfo); // 添加左下角角色信息
     
     // 添加返回按钮事件
     backButton.addEventListener('click', function() {

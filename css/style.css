@@ -457,6 +457,18 @@ margin: 0 auto;
     margin-top: auto;
 }
 
+/* 增加选择器优先级 */
+div.scene-status.locked-status {
+    background-color: rgba(231, 76, 60, 0.2) !important;
+    color: #c0392b !important;
+}
+
+div.scene-status.unlocked-status {
+    background-color: rgba(46, 204, 113, 0.2) !important;
+    color: #27ae60 !important;
+}
+
+
 .unlocked .scene-status {
     background-color: rgba(46, 204, 113, 0.2);
     color: #27ae60;

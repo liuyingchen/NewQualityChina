@@ -49,6 +49,7 @@ class Character {
 
     // 解锁新场景
     unlockScene(sceneId) {
+        console.log(sceneId);
         if (!this.unlockedScenes.includes(sceneId)) {
             this.unlockedScenes.push(sceneId);
             return true;

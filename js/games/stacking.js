@@ -478,7 +478,7 @@ function initStackingGame(container, character) {
         movingBlock.style.left = '0px';
         
         // 增加难度
-        blockSpeed += 0.2;
+        blockSpeed += 0.1;
         
         // 检查是否完成游戏 - 8层即可完成
         if (currentLevel > 10) {
@@ -554,7 +554,7 @@ function initStackingGame(container, character) {
         
         // 计算获得的积分
         const basePoints = 0;
-        const earnedPoints = success ? (basePoints + score) : Math.floor((basePoints + score) / 2);
+        const earnedPoints = success ? (basePoints + score) : 0;
         
         // 添加积分
         character.addScore(earnedPoints);
@@ -566,6 +566,7 @@ function initStackingGame(container, character) {
             
             // 自动解锁下一个场景（如果有）
             const nextScene = window.gameScenes ? window.gameScenes.find(s => s.requiresSceneId === 1) : null;
+            console.log(nextScene);
             if (nextScene && !character.isSceneUnlocked(nextScene.id)) {
                 character.unlockScene(nextScene.id);
             }
@@ -577,12 +578,13 @@ function initStackingGame(container, character) {
                 sceneId: 1
             });
         } else {
-            character.addAward({
-                name: "Sunlit Gobi",
-                description: "Play Sunlit Gobi",
-                points: earnedPoints,
-                sceneId: 1
-            });
+            // character.addAward({
+            //     name: "Sunlit Gobi",
+            //     description: "Play Sunlit Gobi",
+            //     points: earnedPoints,
+            //     sceneId: 1
+            // });
+            // 失败就不做任何累加分的处理了
         }
         
         // 保存角色信息

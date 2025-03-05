@@ -29,6 +29,8 @@ const gameScenes = [
     }
 ];
 
+window.gameScenes = gameScenes;
+
 // 添加调试模式变量
 const DEBUG_MODE = false; // 设置为 true 时跳过所有解锁限制
 
@@ -80,10 +82,15 @@ function renderScenes(character) {
         const canUnlock = DEBUG_MODE ? true : (!isUnlocked && 
             (scene.requiresSceneId === 0 || character.isSceneCompleted(scene.requiresSceneId)));
         
+            const sceneClass = isUnlocked ? 'unlocked' : 'locked';
+
         const sceneElement = document.createElement('div');
-        sceneElement.className = `scene ${isUnlocked ? 'unlocked' : 'locked'}`;
+        // sceneElement.className = `scene ${isUnlocked ? 'unlocked' : 'locked'}`;
+        sceneElement.className = `scene ${sceneClass}`;
         sceneElement.dataset.id = scene.id;
-        
+         // 确定场景状态类名
+         
+         console.log(isUnlocked,canUnlock,scene.id);
         // 修改HTML结构，增加图片容器类名以便于CSS控制
         sceneElement.innerHTML = `
             <div class="scene-image-container">
@@ -93,10 +100,10 @@ function renderScenes(character) {
                 <div class="scene-text">
                     <h3>${scene.name}</h3>
                 </div>
-                <div class="scene-status">
+                <div class="scene-status ${isUnlocked ? 'unlocked-status' : 'locked-status'}">
                     ${(!isUnlocked && !canUnlock && !DEBUG_MODE) ? 
-                        `<span class="lock-status">Unlock</span>` : 
-                        ''
+                        'Unlock' : 
+                        '&nbsp;'
                     }
                 </div>
             </div>

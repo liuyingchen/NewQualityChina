@@ -91,14 +91,30 @@ function createGameUI(container, character) {
     scoreDisplay.style.zIndex = '1000';
     
     scoreDisplay.innerHTML = `
-        <div style="font-size:16px;font-weight:bold;color:#333;margin-bottom:10px;">Points: <span id="game-score">${character.score}</span></div>
-        <button id="view-awards-btn" style="background-color:#3498db;color:white;border:none;padding:8px 15px;border-radius:8px;font-size:14px;cursor:pointer;width:100%;">查看奖项</button>
+         <!-- 积分卡片 -->
+                 <div class="score-display" style="
+                    position: fixed;
+                    top: 15px;
+                    right: 15px;
+                    background-color: rgba(41, 128, 185, 0.1);
+                    color: #2c3e50;
+                    border: 2px solid #2980b9;
+                    padding: 8px 15px;
+                    border-radius: 5px;
+                    font-weight: bold;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    z-index: 10000;
+                    display: flex;
+                    align-items: center;
+                ">
+                    SCORES: <span id="game-score" style="margin-left: 5px; color: #2980b9;">${character.score}</span>
+                </div>
     `;
     
     // 创建状态提示
     const statusTip = document.createElement('div');
     statusTip.id = 'status-tip';
-    statusTip.textContent = '拖动拼图碎片到正确的位置';
+    statusTip.textContent = 'Drag the puzzle pieces to the correct positions';
     statusTip.style.position = 'fixed';
     statusTip.style.top = '80px';
     statusTip.style.left = '50%';
@@ -437,7 +453,7 @@ function createPuzzleGame(container, character) {
         
         // 更新状态提示
         document.getElementById('status-tip').textContent = 
-            `已完成: ${gameState.placedPieces}/${gameState.totalPieces}`;
+            `Completed: ${gameState.placedPieces}/${gameState.totalPieces}`;
         
         // 检查是否完成
         if (gameState.placedPieces === gameState.totalPieces && !gameState.completed) {
@@ -491,7 +507,7 @@ function createPuzzleGame(container, character) {
                         character.unlockScene(nextScene.id);
                         
                         // 显示解锁提示
-                        alert(`恭喜！你已解锁新场景：${nextScene.name}`);
+                       // alert(`恭喜！你已解锁新场景：${nextScene.name}`);
                     }
                 } else {
                     console.log('gameScenes 未定义，跳过场景解锁');

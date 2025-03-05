@@ -135,9 +135,22 @@ function initStackingGame(container, character) {
                 </div>
                 
                 <!-- 积分卡片 -->
-                <div class="score-display" style="position:fixed;top:15px;right:15px;background-color:rgba(255,255,255,0.9);border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.2);padding:12px;z-index:10000;">
-                    <div style="font-size:16px;font-weight:bold;color:#333;margin-bottom:10px;">Points: <span id="game-score">${character.score}</span></div>
-                    <button id="view-awards-btn" style="background-color:#3498db;color:white;border:none;padding:8px 15px;border-radius:8px;font-size:14px;cursor:pointer;width:100%;">查看奖项</button>
+                 <div class="score-display" style="
+                    position: fixed;
+                    top: 15px;
+                    right: 15px;
+                    background-color: rgba(41, 128, 185, 0.1);
+                    color: #2c3e50;
+                    border: 2px solid #2980b9;
+                    padding: 8px 15px;
+                    border-radius: 5px;
+                    font-weight: bold;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    z-index: 10000;
+                    display: flex;
+                    align-items: center;
+                ">
+                    SCORES: <span id="game-score" style="margin-left: 5px; color: #2980b9;">${character.score}</span>
                 </div>
 
                 <!-- 左下角角色信息 - 使用CSS类而不是内联样式 -->
@@ -149,7 +162,7 @@ function initStackingGame(container, character) {
                 <button id="back-to-scene" class="back-button game-back-button">BACK</button>
             </div>
         `;
-        
+        // 去掉了 <button id="view-awards-btn" style="background-color:#3498db;color:white;border:none;padding:8px 15px;border-radius:8px;font-size:14px;cursor:pointer;width:100%;">查看奖项</button>
         // 清空游戏场景并添加游戏容器
         gameScreen.innerHTML = '';
         gameScreen.appendChild(gameContainer);
@@ -305,7 +318,7 @@ function initStackingGame(container, character) {
             });
         });
     } else {
-        console.error('未找到查看奖项按钮');
+       //console.error('未找到查看奖项按钮');
     }
     
     // 开始方块移动动画
@@ -593,20 +606,21 @@ function initStackingGame(container, character) {
         // 显示游戏结束界面
         const gameContainer = document.getElementById('game-container');
         gameContainer.innerHTML = `
-            <div class="game-complete" style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);background:rgba(0,0,0,0.7);color:white;padding:30px;border-radius:15px;text-align:center;min-width:300px;">
-                <h2 style="margin-top:0;color:#2ecc71;">${success ? 'congratulations!' : 'Defeat!'}</h2>
+            <div class="game-complete" style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);background:rgba(0,0,0,0.7);color:white;padding:30px;border-radius:15px;text-align:center;min-width:300px;border-top:5px solid ${success ? '#2ecc71' : '#e74c3c'};">
+                <h2 style="margin-top:0;color:${success ? '#2ecc71' : '#e74c3c'};">${success ? 'Congratulations!' : 'Failed!'}</h2>
                 <div style="margin:20px 0;font-size:18px;">
                     
                     <p>Points: <span style="font-weight:bold;color:#f1c40f;">${earnedPoints}</span></p>
                    
                 </div>
                 <div style="margin-top:30px;">
-                    <button id="continue-btn" style="background:#2ecc71;color:white;border:none;padding:12px 25px;border-radius:30px;font-size:16px;cursor:pointer;transition:all 0.3s;">BACK</button>
+                    <button id="continue-btn" style="background:${success ? '#2ecc71' : '#e74c3c'};color:white;border:none;padding:12px 25px;border-radius:30px;font-size:16px;cursor:pointer;transition:all 0.3s;">BACK</button>
                 </div>
             </div>
         `;
         
-        // 修改继续按钮的事件处理
+        // 确保在DOM更新后再添加事件监听器
+     
         document.getElementById('continue-btn').addEventListener('click', () => {
             // 保存角色数据
             saveCharacter(character);
@@ -630,7 +644,121 @@ function initStackingGame(container, character) {
                 }
             }
         });
+    
     }
+
+    function createGameStructure(container) {
+        // 创建游戏背景
+        container.innerHTML = `
+            <div style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                z-index: 0;
+            ">
+                <img src="../assets/games/stack-bg.png" style="
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    object-position: center;
+                ">
+            </div>
+            
+            <div class="stacking-game" style="
+                position: relative;
+                z-index: 1;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                overflow: hidden;
+            ">
+                <div class="tower-container" id="tower-container">
+                    <div class="base-block"></div>
+                    <div class="moving-block" id="moving-block"></div>
+                </div>
+                
+                <div class="minimal-controls" style="
+                    position: absolute;
+                    bottom: 10%;
+                    left: 50%; 
+                    transform: translateX(-50%); 
+                    z-index: 1000;
+                    text-align: center;
+                ">
+                    <button id="place-block" style="
+                        padding: 8px 20px; 
+                        font-size: 16px; 
+                        background-color: #2ecc71; 
+                        color: white; 
+                        border: none; 
+                        border-radius: 6px; 
+                        cursor: pointer;
+                        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                        text-align: center;
+                        line-height: 1;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    ">BUILD</button>
+                </div>
+                
+                <div class="minimal-stats">
+                    <div class="mini-progress-container">
+                        <div class="mini-progress-bar" id="progress-bar"></div>
+                        <span id="progress-text">0%</span>
+                    </div>
+                    <span id="current-level"></span>
+                    <span id="current-score"></span>
+                </div>
+                
+                <!-- 积分卡片 -->
+                <div class="score-display" style="
+                    position: fixed;
+                    top: 15px;
+                    right: 15px;
+                    background-color: rgba(41, 128, 185, 0.1);
+                    color: #2c3e50;
+                    border: 2px solid #2980b9;
+                    padding: 8px 15px;
+                    border-radius: 5px;
+                    font-weight: bold;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    z-index: 10000;
+                    display: flex;
+                    align-items: center;
+                ">
+                    SCORES: <span id="game-score" style="margin-left: 5px; color: #2980b9;">0</span>
+                </div>
+            </div>
+        `;
+        
+        console.log('游戏结构已创建');
+    }
+
+    // 初始化游戏逻辑
+function initGameLogic(character) {
+    // 设置游戏分数显示
+    const scoreElement = document.getElementById('game-score');
+    if (scoreElement) {
+        scoreElement.textContent = character.score || 0;
+    }
+    
+    // 绑定按钮事件
+    // const placeBlockButton = document.getElementById('place-block');
+    // if (placeBlockButton) {
+    //     placeBlockButton.addEventListener('click', handlePlaceBlock);
+    // }
+    
+    // 初始化其他游戏逻辑...
+    
+    console.log('游戏逻辑已初始化');
+}
 
     // // 获取容器尺寸
     // const container = document.getElementById('game-container');

@@ -182,7 +182,7 @@ function initElectricStreetGame(container, character) {
                     font-size: 18px;
                     z-index: 100;
                 ">
-                    <span id="status-text">请选择工具并点击汽车进行改造</span>
+                    <span id="status-text">Please choose a tool</span>
                 </div>
                 
                 <!-- 进度显示 -->
@@ -206,10 +206,23 @@ function initElectricStreetGame(container, character) {
                     "></div>
                 </div>
                 
-                <!-- 积分卡片 -->
-                <div class="score-display" style="position:fixed;top:15px;right:15px;background-color:rgba(255,255,255,0.9);border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.2);padding:12px;z-index:10000;">
-                    <div style="font-size:16px;font-weight:bold;color:#333;margin-bottom:10px;">Points: <span id="game-score">${character.score}</span></div>
-                    <button id="view-awards-btn" style="background-color:#3498db;color:white;border:none;padding:8px 15px;border-radius:8px;font-size:14px;cursor:pointer;width:100%;">查看奖项</button>
+                 <!-- 积分卡片 -->
+                 <div class="score-display" style="
+                    position: fixed;
+                    top: 15px;
+                    right: 15px;
+                    background-color: rgba(41, 128, 185, 0.1);
+                    color: #2c3e50;
+                    border: 2px solid #2980b9;
+                    padding: 8px 15px;
+                    border-radius: 5px;
+                    font-weight: bold;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    z-index: 10000;
+                    display: flex;
+                    align-items: center;
+                ">
+                    SCORES: <span id="game-score" style="margin-left: 5px; color: #2980b9;">${character.score}</span>
                 </div>
 
                 <!-- 左下角角色信息 - 使用CSS类而不是内联样式 -->
@@ -276,7 +289,7 @@ function initElectricStreetGameLogic(character) {
         tool1.style.transform = 'scale(1.1)';
         tool1.style.boxShadow = '0 0 15px rgba(52, 152, 219, 0.7)';
         gameState.selectedTool = 'tool1';
-        statusText.textContent = '已选择电池工具，点击汽车进行改造';
+        statusText.textContent = 'You have chosen the new energy tool. Click on the vehicle to transform it into a new energy vehicle.';
     });
     
     tool2.addEventListener('click', () => {
@@ -284,7 +297,7 @@ function initElectricStreetGameLogic(character) {
         tool2.style.transform = 'scale(1.1)';
         tool2.style.boxShadow = '0 0 15px rgba(46, 204, 113, 0.7)';
         gameState.selectedTool = 'tool2';
-        statusText.textContent = '已选择充电器工具，点击汽车进行改造';
+        statusText.textContent = 'You have chosen the charging tool. Click on the vehicle to charge it.';
     });
     
     // 重置工具选择状态
@@ -380,7 +393,7 @@ function initElectricStreetGameLogic(character) {
             // 更新游戏状态
             gameState.carStatus[carId] = true;
             gameState.convertedCars++;
-            statusText.textContent = `成功改造了一辆汽车！(${gameState.convertedCars}/${gameState.totalCars})`;
+            statusText.textContent = `Successfully transformed a car！(${gameState.convertedCars}/${gameState.totalCars})`;
             
             // 更新进度
             updateProgress();
@@ -416,7 +429,7 @@ function initElectricStreetGameLogic(character) {
             gameArea.style.filter = 'grayscale(0%) brightness(1.2)';
             
             // 显示完成消息
-            statusText.textContent = '恭喜！你成功将所有汽车改造为电动车！';
+            statusText.textContent = `Congratulations! You have completed the city's green upgrade`;
             
             // 添加完成动画
             showCompletionAnimation();

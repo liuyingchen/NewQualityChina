@@ -77,16 +77,19 @@ body {
 .back-button {
     position: absolute;
     left: 20px;
-    top: 50%;
+    top: 10%;
     transform: translateY(-50%);
-    background-color: transparent;
-    color: #3498db;
-    border: 2px solid #3498db;
+    background-color: rgba(41, 128, 185, 0.1); 
+    color: #2c3e50; /* 更深的文字颜色 */
+    border: 2px solid #2980b9; /* 更深的蓝色边框 */
     padding: 8px 15px;
     border-radius: 5px;
     cursor: pointer;
     display: flex;
     align-items: center;
+    font-weight: bold; /* 加粗文字 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /
+
 }
 
 .back-button:before {
@@ -342,9 +345,28 @@ margin: 0 auto;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.score-display {
+/* .score-display {
     font-weight: bold;
     color: #2c3e50;
+} */
+.score-display {
+    position: absolute;
+    right: 20px;
+    top: 100%;
+    background-color: rgba(41, 128, 185, 0.1); /* 添加轻微的蓝色背景 */
+    color: #2c3e50; /* 更深的文字颜色 */
+    border: 2px solid #2980b9; /* 更深的蓝色边框 */
+    padding: 8px 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    font-weight: bold; /* 加粗文字 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加轻微阴影增加立体感 */
+}
+
+#player-score {
+    margin-left: 5px;
+    color: #2980b9; /* 分数数字使用蓝色 */
 }
 
 #view-awards {
@@ -469,7 +491,7 @@ div.scene-status.unlocked-status {
 }
 
 
-.unlocked .scene-status {
+/* .unlocked .scene-status {
     background-color: rgba(46, 204, 113, 0.2);
     color: #27ae60;
 }
@@ -477,7 +499,7 @@ div.scene-status.unlocked-status {
 .locked .scene-status {
     background-color: rgba(231, 76, 60, 0.2);
     color: #c0392b;
-}
+} */
 
 /* 锁定图标 */
 .lock-icon {

@@ -50,8 +50,9 @@ function renderScenes(character) {
     
     topRightControls.innerHTML = `
         <div class="score-display">SCORES: <span id="player-score">${character.score}</span></div>
-        <button id="view-awards">查看奖项</button>
+        
     `;
+    // 去掉了点击的动作 <button id="view-awards">查看奖项</button> 
     
     // 确保右上角控件在正确位置
     topRightControls.style.position = 'absolute';

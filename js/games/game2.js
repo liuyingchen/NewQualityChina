@@ -660,7 +660,7 @@ function createPuzzleGame(container, character) {
                     
                       <div style="margin:30px 0;padding:15px;background:rgba(255,255,255,0.2);border-radius:10px;animation:fadeIn 2s ease-out;">
                         <p style="font-size:20px;color:#000000;margin-bottom:15px;font-weight:bold;animation:colorPulse 3s infinite;text-shadow:0 1px 1px rgba(255,255,255,0.5);">For more practical cases of China's sustainability efforts, please click here:</p>
-                        <a href="https://urdu.cgtn.com/shipin/zhongguo" target="_blank" style="display:inline-block;color:#3498db;font-size:18px;font-weight:bold;text-decoration:none;padding:10px 20px;background:rgba(255,255,255,0.4);border-radius:30px;transition:all 0.3s ease;box-shadow:0 2px 5px rgba(0,0,0,0.2);animation:bounce 2s infinite;">Explore More Cases</a>
+                        <a href="https://urdu.cgtn.com/2024/12/19/VIDE1734598684284269" target="_blank" style="display:inline-block;color:#3498db;font-size:18px;font-weight:bold;text-decoration:none;padding:10px 20px;background:rgba(255,255,255,0.4);border-radius:30px;transition:all 0.3s ease;box-shadow:0 2px 5px rgba(0,0,0,0.2);animation:bounce 2s infinite;">Explore More Cases</a>
                     </div>
 
                 </div>

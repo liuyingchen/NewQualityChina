@@ -404,6 +404,42 @@ function initElectricStreetGameLogic(character) {
         carElement.style.transition = 'transform 0.5s, filter 0.5s';
         carElement.style.transform = 'scale(1.2)';
         carElement.style.filter = 'brightness(1.5)';
+
+         // 添加粒子效果容器
+         const particleContainer = document.createElement('div');
+         particleContainer.className = 'particle-container';
+         particleContainer.style.cssText = `
+             position: absolute;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             pointer-events: none;
+             z-index: 1000;
+         `;
+         carElement.parentNode.appendChild(particleContainer);
+         
+         // 创建粒子效果
+         for (let i = 0; i < 30; i++) {
+             createParticle(particleContainer, carElement);
+         }
+         
+         // 添加光环效果
+         const glowEffect = document.createElement('div');
+         glowEffect.className = 'glow-effect';
+         glowEffect.style.cssText = `
+             position: absolute;
+             top: 50%;
+             left: 50%;
+             transform: translate(-50%, -50%);
+             width: 0;
+             height: 0;
+             border-radius: 50%;
+             background: radial-gradient(circle, rgba(46, 204, 113, 0.8) 0%, rgba(46, 204, 113, 0) 70%);
+             z-index: 999;
+             animation: glowPulse 1s ease-out;
+         `;
+         carElement.parentNode.appendChild(glowEffect);
         
         setTimeout(() => {
             // 替换为电动车图片
@@ -798,4 +834,64 @@ window.showAwardsModal = function(character) {
             document.removeEventListener('click', closeDropdown);
         }
     });
-}; 
+};
+
+// 创建粒子效果函数
+function createParticle(container, sourceElement) {
+    const particle = document.createElement('div');
+    
+    // 获取元素位置
+    const rect = sourceElement.getBoundingClientRect();
+    const x = rect.width / 2;
+    const y = rect.height / 2;
+    
+    // 随机粒子颜色
+    const colors = ['#2ecc71', '#3498db', '#1abc9c', '#f1c40f'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    
+    // 设置粒子样式
+    particle.style.cssText = `
+        position: absolute;
+        left: ${x}px;
+        top: ${y}px;
+        width: ${Math.random() * 10 + 5}px;
+        height: ${Math.random() * 10 + 5}px;
+        background-color: ${color};
+        border-radius: 50%;
+        pointer-events: none;
+        opacity: ${Math.random() * 0.5 + 0.5};
+        z-index: 1000;
+    `;
+    
+    container.appendChild(particle);
+    
+    // 随机方向和速度
+    const angle = Math.random() * Math.PI * 2;
+    const speed = Math.random() * 3 + 2;
+    const vx = Math.cos(angle) * speed;
+    const vy = Math.sin(angle) * speed;
+    
+    // 粒子动画
+    let opacity = 1;
+    const animate = () => {
+        if (opacity <= 0) {
+            if (particle.parentNode) {
+                particle.parentNode.removeChild(particle);
+            }
+            return;
+        }
+        
+        const currentX = parseFloat(particle.style.left);
+        const currentY = parseFloat(particle.style.top);
+        
+        particle.style.left = `${currentX + vx}px`;
+        particle.style.top = `${currentY + vy}px`;
+        
+        opacity -= 0.02;
+        particle.style.opacity = opacity;
+        
+        requestAnimationFrame(animate);
+    };
+    
+    requestAnimationFrame(animate);
+} 

@@ -156,7 +156,8 @@ function addSceneEventListeners(character) {
             // 前置场景未完成
             else {
                 const requiredScene = gameScenes.find(s => s.id === scene.requiresSceneId);
-                showToast(`需要先完成 "${requiredScene.name}" 才能解锁此场景`);
+                showToast(`Unlock this scene after completing "${requiredScene.name}" `);
+                // Unlock this scene after completing the previous one.
             }
         });
     });

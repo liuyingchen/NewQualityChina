@@ -20,6 +20,14 @@ function initGame2(container, character) {
     // 保存全局引用
     window.gameData = window.gameData || {};
     window.gameData.currentCharacter = character;
+
+     // 播放游戏背景音乐
+     if (typeof audioManager !== 'undefined') {
+        // 先加载音频文件（如果尚未加载）
+        audioManager.load('puzz', 'assets/audio/puzz.mp3', 'music');
+        // 播放背景音乐，设置循环播放
+        audioManager.play('puzz', true);
+    }
     
     // 不要清空整个body，而是只隐藏其他场景
     document.querySelectorAll('.screen').forEach(screen => {
@@ -147,7 +155,11 @@ function createGameUI(container, character) {
     
     // 添加返回按钮事件
     backButton.addEventListener('click', function() {
-
+          //停止背景音乐
+          if (typeof audioManager !== 'undefined') {
+            audioManager.play('click');  // 播放点击音效
+            audioManager.stop('puzz');  // 停止背景音乐
+        }
         
         // 计算已完成的拼图数量
         const placedPieces = document.querySelectorAll('.puzzle-piece.placed').length;
@@ -323,6 +335,8 @@ function createPuzzleGame(container, character) {
             
             slot.addEventListener('dragleave', function() {
                 this.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
+                // 播放音效
+               
             });
             
             slot.addEventListener('drop', function(e) {
@@ -445,6 +459,11 @@ function createPuzzleGame(container, character) {
         slot.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
         slot.style.border = '2px solid rgba(46, 204, 113, 0.8)';
         
+        if (typeof audioManager !== 'undefined') {
+            audioManager.play('click');  // 播放点击音效
+          
+        }
+
         // 移除原始拼图碎片
         piece.remove();
         
@@ -464,6 +483,12 @@ function createPuzzleGame(container, character) {
     
     // 完成游戏函数
     function completeGame() {
+        // 停止背景音乐
+        if (typeof audioManager !== 'undefined') {
+        
+            audioManager.stop('puzz');  // 停止背景音乐
+            audioManager.play('sucess') //播放成功音乐
+        }
         // 显示完整图片
         setTimeout(() => {
             document.getElementById('complete-image').style.opacity = '1';
@@ -546,7 +571,7 @@ function createPuzzleGame(container, character) {
                 }
                 
                 // 跳转到获奖页面
-                navigateToAwardsPage();
+                navigateToAwardsPage(); 
             }, 1000);
             
             // // 添加返回按钮事件（参考stacking.js的实现）
@@ -586,6 +611,15 @@ function createPuzzleGame(container, character) {
     function navigateToAwardsPage() {
         console.log('跳转到最终获奖页面');
         
+        //播放最终的成功音乐
+         // 播放游戏背景音乐
+     if (typeof audioManager !== 'undefined') {
+        // 先加载音频文件（如果尚未加载）
+        audioManager.load('finish', 'assets/audio/finish.mp3', 'effect');
+        // 播放背景音乐，设置循环播放
+        audioManager.play('finish', false);
+    }
+
         // 清空当前游戏内容
         const gameScreen = document.getElementById('game-screen');
         if (gameScreen) {
@@ -733,6 +767,12 @@ function createPuzzleGame(container, character) {
                   const backButton = document.getElementById('back-to-scene');
                   if (backButton) {
                       backButton.addEventListener('click', () => {
+                          //播放click音效
+                        
+                          if (typeof audioManager !== 'undefined') {
+                            audioManager.play('click');  // 播放点击音效
+                        
+                        }
                           // 恢复游戏场景的原始内容
                           const gameScreen = document.getElementById('game-screen');
                           if (gameScreen) {

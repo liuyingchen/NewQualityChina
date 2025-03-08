@@ -20,6 +20,15 @@ function initElectricStreetGame(container, character) {
     // 保存全局引用
     window.gameData = window.gameData || {};
     window.gameData.currentCharacter = character;
+
+     // 播放游戏背景音乐
+     if (typeof audioManager !== 'undefined') {
+        // 先加载音频文件（如果尚未加载）
+        audioManager.load('electric', 'assets/audio/electric.mp3', 'music');
+        // 播放背景音乐，设置循环播放
+        audioManager.play('electric', true);
+    }
+
     
     // 不要清空整个body，而是只隐藏其他场景
     document.querySelectorAll('.screen').forEach(screen => {
@@ -88,7 +97,7 @@ function initElectricStreetGame(container, character) {
                         
                         <div class="car-container" id="car2-container" style="
                             position: absolute;
-                            right: 30%;
+                            right: 20%;
                             bottom: 15%;
                             width: 240px;
                             height: 150px;
@@ -285,6 +294,11 @@ function initElectricStreetGameLogic(character) {
     
     // 工具选择事件
     tool1.addEventListener('click', () => {
+
+        if (typeof audioManager !== 'undefined') {
+            audioManager.play('click');
+        }
+
         resetToolSelection();
         tool1.style.transform = 'scale(1.1)';
         tool1.style.boxShadow = '0 0 15px rgba(52, 152, 219, 0.7)';
@@ -293,6 +307,11 @@ function initElectricStreetGameLogic(character) {
     });
     
     tool2.addEventListener('click', () => {
+
+        if (typeof audioManager !== 'undefined') {
+            audioManager.play('click');
+        }
+
         resetToolSelection();
         tool2.style.transform = 'scale(1.1)';
         tool2.style.boxShadow = '0 0 15px rgba(46, 204, 113, 0.7)';
@@ -374,6 +393,13 @@ function initElectricStreetGameLogic(character) {
     
     // 转换汽车函数
     function convertCar(carElement, carId) {
+
+
+        if (typeof audioManager !== 'undefined') {
+            
+            // 播放背景音乐，设置循环播放
+            audioManager.play('click');
+        }
         // 显示转换动画
         carElement.style.transition = 'transform 0.5s, filter 0.5s';
         carElement.style.transform = 'scale(1.2)';
@@ -424,8 +450,12 @@ function initElectricStreetGameLogic(character) {
         console.log('gameState finish:', gameState.convertedCars);
         if (gameState.convertedCars === gameState.totalCars && !gameState.gameCompleted) {
             gameComplete = true;
-            
-            // 移除灰度滤镜，使场景变亮
+
+            // 停止背景音乐
+            if (typeof audioManager !== 'undefined') {
+                audioManager.stop('electric');  // 停止背景音乐
+            }
+            // 移除灰度滤镜，使场景变亮 
             gameArea.style.filter = 'grayscale(0%) brightness(1.2)';
             
             // 显示完成消息
@@ -464,6 +494,12 @@ function initElectricStreetGameLogic(character) {
     
     // 显示完成动画
     function showCompletionAnimation() {
+
+        //播放成功音效
+        if (typeof audioManager !== 'undefined') {
+            audioManager.play('sucess');
+        }
+
         // 获取当前角色
         const character = window.gameData.currentCharacter;
         if (!character) {
@@ -508,6 +544,11 @@ function initElectricStreetGameLogic(character) {
         const backBtn = document.getElementById('completion-back-btn');
         if (backBtn) {
             backBtn.addEventListener('click', () => {
+                //停止背景音乐
+                if (typeof audioManager !== 'undefined') {
+                    audioManager.play('click');  // 播放点击音效
+                    audioManager.stop('electric');  // 停止背景音乐
+                }
                 // 移除完成动画
                 if (document.body.contains(completionAnim)) {
                     document.body.removeChild(completionAnim);
@@ -541,6 +582,13 @@ function initElectricStreetGameLogic(character) {
     
     // 返回按钮功能
     backButton.addEventListener('click', () => {
+
+        // 停止背景音乐
+        if (typeof audioManager !== 'undefined') {
+            audioManager.play('click');  // 播放点击音效
+            audioManager.stop('electric');  // 停止背景音乐
+        }
+
         // 如果游戏未完成，给予部分积分
         if (!gameState.gameCompleted && gameState.convertedCars > 0) {
             const partialPoints = Math.floor(25 * (gameState.convertedCars / gameState.totalCars));

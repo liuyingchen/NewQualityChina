@@ -175,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 界面切换函数
 function switchScreen(fromId, toId) {
+    
     console.log(`切换界面：从 ${fromId} 到 ${toId}`);
     const fromScreen = document.getElementById(fromId);
     const toScreen = document.getElementById(toId);

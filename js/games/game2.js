@@ -25,6 +25,7 @@ function initGame2(container, character) {
      if (typeof audioManager !== 'undefined') {
         // 先加载音频文件（如果尚未加载）
         audioManager.load('puzz', 'assets/audio/puzz.mp3', 'music');
+        audioManager.setVolume('stacking', 1);
         // 播放背景音乐，设置循环播放
         audioManager.play('puzz', true);
     }

@@ -16,6 +16,11 @@ class AudioManager {
         this.preloadCommonSounds();
     }
     
+    setVolume(id, volume) {
+        if (this.sounds[id] && this.sounds[id].audio) {
+            this.sounds[id].audio.volume = Math.max(0, Math.min(1, volume));
+        }
+    }
     /**
      * 预加载常用音频文件
      */

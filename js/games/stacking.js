@@ -22,6 +22,14 @@ function initStackingGame(container, character) {
     // 保存全局引用
     window.gameData = window.gameData || {};
     window.gameData.currentCharacter = character;
+
+    // 播放游戏背景音乐
+    if (typeof audioManager !== 'undefined') {
+        // 先加载音频文件（如果尚未加载）
+        audioManager.load('stacking', 'assets/audio/stacking.mp3', 'music');
+        // 播放背景音乐，设置循环播放
+        audioManager.play('stacking', true);
+    }
     
     // 不要清空整个body，而是只隐藏其他场景
     document.querySelectorAll('.screen').forEach(screen => {
@@ -197,6 +205,12 @@ function initStackingGame(container, character) {
     
     // 返回按钮功能
     document.getElementById('back-to-scene').addEventListener('click', () => {
+
+        // 停止背景音乐
+        if (typeof audioManager !== 'undefined') {
+            audioManager.stop('stacking');
+        }
+        
         // 保存角色分数
         if (score > 0) {
             const partialPoints = Math.floor(score * 0.5);
@@ -311,7 +325,13 @@ function initStackingGame(container, character) {
     
     // 放置方块按钮事件
     placeBlockBtn.addEventListener('click', () => {
-        console.log('放置按钮被点击'); // 调试日志
+        console.log('放置按钮被点击----'); // 调试日志
+
+        // 播放点击音效
+        if (typeof audioManager !== 'undefined') {
+            audioManager.play('click');
+        }
+
         placeBlock();
     });
     
@@ -565,6 +585,21 @@ function initStackingGame(container, character) {
     
     // 结束游戏
     function endGame(success) {
+
+         // 停止背景音乐
+         if (typeof audioManager !== 'undefined') {
+            audioManager.stop('stacking');
+            if (!success) {
+                // 加载并播放失败音效
+                audioManager.load('fail', 'assets/audio/fail.mp3', 'effect');
+                audioManager.play('fail');
+            }else{
+                // 加载并播放成功音效
+                audioManager.load('sucess', 'assets/audio/sucess.mp3', 'effect');
+                audioManager.play('sucess');
+            }
+        }
+
         gameOver = true;
         cancelAnimationFrame(animationId);
         

@@ -34,11 +34,11 @@ class AudioManager {
             console.log('buttonClick 加载状态:', buttonClickAudio ? '成功' : '失败');
             
             console.log('尝试加载音频: success (assets/audio/sucess.mp3)');
-            const successAudio = this.load('success', 'assets/audio/sucess.mp3', 'effect');
+            const successAudio = this.load('sucess', 'assets/audio/sucess.mp3', 'effect');
             console.log('success 加载状态:', successAudio ? '成功' : '失败');
             
             console.log('尝试加载音频: error (assets/audio/fail.mp3)');
-            const errorAudio = this.load('error', 'assets/audio/fail.mp3', 'effect');
+            const errorAudio = this.load('fail', 'assets/audio/fail.mp3', 'effect');
             console.log('error 加载状态:', errorAudio ? '成功' : '失败');
             
             // 添加一个别名，使 'click' 指向 'buttonClick'

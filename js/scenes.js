@@ -133,6 +133,12 @@ function renderScenes(character) {
 function addSceneEventListeners(character) {
     document.querySelectorAll('.scene').forEach(sceneElement => {
         sceneElement.addEventListener('click', () => {
+
+             // 播放点击音效
+             if (typeof audioManager !== 'undefined') {
+                audioManager.play('click');
+            }
+
             const sceneId = parseInt(sceneElement.dataset.id);
             const scene = gameScenes.find(s => s.id === sceneId);
             
@@ -158,6 +164,12 @@ function addSceneEventListeners(character) {
 
 // 开始游戏
 function startGame(scene, character) {
+
+    // 停止背景音乐
+    if (typeof audioManager !== 'undefined') {
+        audioManager.stop('enter');
+    }
+    
     // 切换到游戏界面
     switchScreen('scene-select', 'game-screen');
     

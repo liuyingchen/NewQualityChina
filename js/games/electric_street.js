@@ -311,12 +311,12 @@ function initElectricStreetGameLogic(character) {
     // 汽车点击事件
     car1Container.addEventListener('click', () => {
         if (gameState.carStatus.car1) {
-            statusText.textContent = '这辆车已经改造完成了';
+            statusText.textContent = 'This car has been transformed';
             return;
         }
         
         if (!gameState.selectedTool) {
-            statusText.textContent = '请先选择一个工具';
+            statusText.textContent = 'Please choose a tool';
             return;
         }
         
@@ -326,12 +326,12 @@ function initElectricStreetGameLogic(character) {
     
     car2Container.addEventListener('click', () => {
         if (gameState.carStatus.car2) {
-            statusText.textContent = '这辆车已经改造完成了';
+            statusText.textContent = 'This car has been transformed';
             return;
         }
         
         if (!gameState.selectedTool) {
-            statusText.textContent = '请先选择一个工具';
+            statusText.textContent = 'Please choose a tool';
             return;
         }
         
@@ -342,12 +342,12 @@ function initElectricStreetGameLogic(character) {
     // 新增三辆车的点击事件
     car4Container.addEventListener('click', () => {
         if (gameState.carStatus.car4) {
-            statusText.textContent = '这辆车已经改造完成了';
+            statusText.textContent = 'This car has been transformed';
             return;
         }
         
         if (!gameState.selectedTool) {
-            statusText.textContent = '请先选择一个工具';
+            statusText.textContent = 'Please choose a tool';
             return;
         }
         
@@ -359,12 +359,12 @@ function initElectricStreetGameLogic(character) {
     
     car6Container.addEventListener('click', () => {
         if (gameState.carStatus.car6) {
-            statusText.textContent = '这辆车已经改造完成了';
+            statusText.textContent = 'This car has been transformed';
             return;
         }
         
         if (!gameState.selectedTool) {
-            statusText.textContent = '请先选择一个工具';
+            statusText.textContent = 'Please choose a tool';
             return;
         }
         
@@ -414,8 +414,8 @@ function initElectricStreetGameLogic(character) {
         
         // 检查游戏是否完成
         if (gameState.convertedCars === gameState.totalCars) {
-            document.getElementById('status-text').textContent = '恭喜！所有汽车都已改造完成！';
-            // 这里可以添加游戏完成的奖励逻辑
+            document.getElementById('status-text').textContent = 'Congratulations! You have completed the city\'s green upgrade.';
+            // 这里可以添加游戏完成的奖励逻辑 Congratulations! You have completed the city's green upgrade.
         }
     }
     
@@ -464,38 +464,79 @@ function initElectricStreetGameLogic(character) {
     
     // 显示完成动画
     function showCompletionAnimation() {
+        // 获取当前角色
+        const character = window.gameData.currentCharacter;
+        if (!character) {
+            console.error('无法获取角色数据');
+            return;
+        }
+        
         // 创建完成动画元素
         const completionAnim = document.createElement('div');
-        completionAnim.className = 'completion-animation';
         completionAnim.style.position = 'fixed';
         completionAnim.style.top = '50%';
         completionAnim.style.left = '50%';
         completionAnim.style.transform = 'translate(-50%, -50%)';
-        completionAnim.style.background = 'rgba(46, 204, 113, 0.8)';
+        completionAnim.style.backgroundColor = 'rgba(46, 204, 113, 0.9)';
         completionAnim.style.color = 'white';
-        completionAnim.style.padding = '20px 40px';
+        completionAnim.style.padding = '20px 30px';
         completionAnim.style.borderRadius = '10px';
         completionAnim.style.fontSize = '24px';
         completionAnim.style.fontWeight = 'bold';
         completionAnim.style.zIndex = '1000';
-        completionAnim.style.opacity = '0';
-        completionAnim.style.transition = 'all 0.5s ease';
-        completionAnim.textContent = 'Finished！+50Points';
+        completionAnim.style.boxShadow = '0 5px 20px rgba(0,0,0,0.3)';
+        //completionAnim.textContent = `Congratulations！Got 50 Points ！`;
+
+        completionAnim.innerHTML = `
+        <div style="text-align: center; margin-bottom: 20px;">Congratulations！Got 50 Points！</div>
+        <div style="text-align: center;">
+            <button id="completion-back-btn" style="
+                background: #87CEEB;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 30px;
+                font-size: 16px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            ">BACK</button>
+        </div>
+    `;
         
         document.body.appendChild(completionAnim);
         
-        // 显示动画
-        setTimeout(() => {
-            completionAnim.style.opacity = '1';
-        }, 100);
-        
-        // 移除动画
-        setTimeout(() => {
-            completionAnim.style.opacity = '0';
-            setTimeout(() => {
-                document.body.removeChild(completionAnim);
-            }, 500);
-        }, 3000);
+        const backBtn = document.getElementById('completion-back-btn');
+        if (backBtn) {
+            backBtn.addEventListener('click', () => {
+                // 移除完成动画
+                if (document.body.contains(completionAnim)) {
+                    document.body.removeChild(completionAnim);
+                }
+                
+                // 恢复游戏场景的原始内容
+                const gameScreen = document.getElementById('game-screen');
+                if (gameScreen) {
+                    const originalContent = gameScreen.getAttribute('data-original-content');
+                    if (originalContent) {
+                        gameScreen.innerHTML = originalContent;
+                    }
+                }
+                
+                // 使用switchScreen切换回场景选择界面
+                if (typeof switchScreen === 'function') {
+                    switchScreen('game-screen', 'scene-select');
+                    
+                    // 重新渲染场景
+                    if (typeof renderScenes === 'function') {
+                        renderScenes(character);
+                    }
+                }
+            });
+        }
+        // 3秒后移除
+        // setTimeout(() => {
+        //     document.body.removeChild(completionAnim);
+        // }, 3000);
     }
     
     // 返回按钮功能

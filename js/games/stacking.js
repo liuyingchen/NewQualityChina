@@ -107,30 +107,15 @@ function initStackingGame(container, character) {
                     text-align: center;
                 ">
 
-                <button id="place-block" style="
-                    padding: 8px 20px; 
-                    font-size: 16px; 
-                    background-color: #2ecc71; 
-                    color: white; 
-                    border: none; 
-                    border-radius: 6px; 
-                    cursor: pointer;
-                    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-                    text-align: center; /* 确保文字水平居中 */
-                    line-height: 1; /* 确保文字垂直居中 */
-                    display: flex; /* 使用flex布局 */
-                    justify-content: center; /* 水平居中 */
-                    align-items: center; /* 垂直居中 */
-                ">BUILD</button>
+                <button id="place-block">BUILD</button>
             </div>
                 
                 <div class="minimal-stats">
                     <div class="mini-progress-container">
                         <div class="mini-progress-bar" id="progress-bar"></div>
-                        <span id="progress-text">0%</span>
+                
                     </div>
-                    <span id="current-level"></span>
-                    <span id="current-score"></span>
+                  
                     
                 </div>
                 
@@ -184,7 +169,7 @@ function initStackingGame(container, character) {
     const currentLevelSpan = document.getElementById('current-level');
     const currentScoreSpan = document.getElementById('current-score');
     const progressBar = document.getElementById('progress-bar');
-    const progressText = document.getElementById('progress-text');
+   // const progressText = document.getElementById('progress-text');
     
     // 设置塔容器位置
     towerContainer.style.position = 'absolute';
@@ -382,27 +367,27 @@ function initStackingGame(container, character) {
         console.log('当前方块位置:', currentLeft, currentBottom, currentWidth);
 
          // 检查第一个方块是否与基础方块重叠
-         if (currentLevel === 1) {
-            console.log('检查第一个方块是否与基础方块重叠');
-            if (baseBlock) {
-                const baseRect = baseBlock.getBoundingClientRect();
-                const baseLeft = baseRect.left;
-                const baseWidth = baseRect.width;
-                console.log('基础方块位置:', baseLeft, baseWidth);
+        //  if (currentLevel === 1) {
+        //     console.log('检查第一个方块是否与基础方块重叠');
+        //     if (baseBlock) {
+        //         const baseRect = baseBlock.getBoundingClientRect();
+        //         const baseLeft = baseRect.left;
+        //         const baseWidth = baseRect.width;
+        //         console.log('基础方块位置:', baseLeft, baseWidth);
                 
-                // 计算重叠部分
-                const leftOverlap = Math.max(0, baseLeft - currentLeft);
-                const rightOverlap = Math.max(0, (currentLeft + currentWidth) - (baseLeft + baseWidth));
-                const overlapWidth = currentWidth - leftOverlap - rightOverlap;
+        //         // 计算重叠部分
+        //         const leftOverlap = Math.max(0, baseLeft - currentLeft);
+        //         const rightOverlap = Math.max(0, (currentLeft + currentWidth) - (baseLeft + baseWidth));
+        //         const overlapWidth = currentWidth - leftOverlap - rightOverlap;
                 
-                // 如果没有重叠，游戏结束
-                if (overlapWidth <= 0) {
-                    console.log('第一个方块未与基础方块重叠，游戏结束');
-                    endGame(false);
-                    return;
-                }
-            }
-        }
+        //         // 如果没有重叠，游戏结束
+        //         if (overlapWidth <= 0) {
+        //             console.log('第一个方块未与基础方块重叠，游戏结束');
+        //             endGame(false);
+        //             return;
+        //         }
+        //     }
+        // }
         
         console.log('当前方块位置:', { // 调试日志
             left: currentLeft,
@@ -418,15 +403,32 @@ function initStackingGame(container, character) {
          // 根据层数设置颜色
          if (currentLevel <= 6) {
             // 前6层使用灰色
-            placedBlock.style.backgroundColor = '#95a5a6';  // 灰色
+            //placedBlock.style.backgroundColor = '#95a5a6';  // 灰色
+            const baseColor = '#95a5a6';
+            const lighterColor = '#bdc3c7';
+            const darkerColor = '#7f8c8d';
+            
+            placedBlock.style.backgroundColor = baseColor;
+            placedBlock.style.backgroundImage = `linear-gradient(to bottom, ${lighterColor}, ${baseColor} 50%, ${darkerColor})`;
+            placedBlock.style.borderTop = '1px solid #ecf0f1';
+            placedBlock.style.borderBottom = '1px solid #7f8c8d';
+            placedBlock.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.4)';
         } else {
             // 最后一层使用亮白色
-            placedBlock.style.backgroundColor = '#ffffff';  // 亮白色
-            placedBlock.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';  // 添加发光效果
+           // placedBlock.style.backgroundColor = '#ffffff';  // 亮白色
+           // placedBlock.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';  // 添加发光效果
+           const glowColor = '#ffffff';
+           placedBlock.style.backgroundColor = glowColor;
+           placedBlock.style.backgroundImage = 'linear-gradient(to bottom, #ffffff, #f5f5f5)';
+           placedBlock.style.borderTop = '1px solid #ffffff';
+           placedBlock.style.borderBottom = '1px solid #e0e0e0';
+           placedBlock.style.boxShadow = '0 0 15px rgba(255,255,255,0.9), inset 0 1px 0 rgba(255,255,255,1)';
+        
         }
         placedBlock.style.position = 'absolute';
         placedBlock.style.bottom = `${currentBottom}px`;
         placedBlock.style.left = `${currentLeft}px`;
+        placedBlock.style.transform = 'perspective(500px) rotateX(5deg)';
         
         console.log('新方块创建完成，准备添加到容器'); // 调试日志
         
@@ -480,8 +482,8 @@ function initStackingGame(container, character) {
         
         // 更新层数和得分
         currentLevel++;
-        currentLevelSpan.textContent = currentLevel;
-        currentScoreSpan.textContent = score;
+       // currentLevelSpan.textContent = currentLevel;
+        //currentScoreSpan.textContent = score;
         
         // 更新进度
         updateProgress(12.5);
@@ -521,6 +523,7 @@ function initStackingGame(container, character) {
     function showScoreAnimation(points) {
         const scoreAnim = document.createElement('div');
         scoreAnim.textContent = `+${points}`;
+        console.log('scoreAnim:', scoreAnim);
         scoreAnim.style.position = 'absolute';
         scoreAnim.style.left = '50%';
         scoreAnim.style.top = '50%';
@@ -550,14 +553,14 @@ function initStackingGame(container, character) {
         progress = Math.min(progress, 100);
         
         // 更新进度条
-        if (progressBar) {
-            progressBar.style.width = `${progress}%`;
-        }
+        // if (progressBar) {
+        //    // progressBar.style.width = `${progress}%`;
+        // }
         
-        // 更新进度文本
-        if (progressText) {
-            progressText.textContent = `${Math.round(progress)}%`;
-        }
+        // // 更新进度文本
+        // if (progressText) {
+        //    // progressText.textContent = `${Math.round(progress)}%`;
+        // }
     }
     
     // 结束游戏
@@ -603,8 +606,12 @@ function initStackingGame(container, character) {
         // 保存角色信息
         saveCharacter(character);
         
-        // 显示游戏结束界面
-        const gameContainer = document.getElementById('game-container');
+
+         // 显示游戏结束界面
+         const gameContainer = document.getElementById('game-container');
+    
+        
+       
         gameContainer.innerHTML = `
             <div class="game-complete" style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);background:rgba(0,0,0,0.7);color:white;padding:30px;border-radius:15px;text-align:center;min-width:300px;border-top:5px solid ${success ? '#2ecc71' : '#e74c3c'};">
                 <h2 style="margin-top:0;color:${success ? '#2ecc71' : '#e74c3c'};">${success ? 'Congratulations!' : 'Failed!'}</h2>
@@ -619,31 +626,39 @@ function initStackingGame(container, character) {
             </div>
         `;
         
+        // 添加音效
+        // if (typeof audioManager !== 'undefined') {
+        //     if (success) {
+        //         audioManager.play('success');
+        //     } else {
+        //         audioManager.play('error');
+        //     }
+        // }
         // 确保在DOM更新后再添加事件监听器
      
-        document.getElementById('continue-btn').addEventListener('click', () => {
-            // 保存角色数据
-            saveCharacter(character);
+         document.getElementById('continue-btn').addEventListener('click', () => {
+             // 保存角色数据
+             saveCharacter(character);
             
-            // 恢复游戏场景的原始内容
-            const gameScreen = document.getElementById('game-screen');
+             // 恢复游戏场景的原始内容
+             const gameScreen = document.getElementById('game-screen');
             if (gameScreen) {
                 const originalContent = gameScreen.getAttribute('data-original-content');
-                if (originalContent) {
+                 if (originalContent) {
                     gameScreen.innerHTML = originalContent;
-                }
-            }
+                 }
+             }
             
-            // 使用switchScreen切换回场景选择界面
-            if (typeof switchScreen === 'function') {
-                switchScreen('game-screen', 'scene-select');
-                
-                // 重新渲染场景
-                if (typeof renderScenes === 'function') {
-                    renderScenes(character);
-                }
+             // 使用switchScreen切换回场景选择界面
+        if (typeof switchScreen === 'function') {
+            switchScreen('game-screen', 'scene-select');
+            
+            // 重新渲染场景
+            if (typeof renderScenes === 'function') {
+                renderScenes(character);
             }
-        });
+        }
+         });
     
     }
 
@@ -691,30 +706,15 @@ function initStackingGame(container, character) {
                     z-index: 1000;
                     text-align: center;
                 ">
-                    <button id="place-block" style="
-                        padding: 8px 20px; 
-                        font-size: 16px; 
-                        background-color: #2ecc71; 
-                        color: white; 
-                        border: none; 
-                        border-radius: 6px; 
-                        cursor: pointer;
-                        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-                        text-align: center;
-                        line-height: 1;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                    ">BUILD</button>
+                    <button id="place-block">BUILD</button>
                 </div>
                 
                 <div class="minimal-stats">
                     <div class="mini-progress-container">
                         <div class="mini-progress-bar" id="progress-bar"></div>
-                        <span id="progress-text">0%</span>
+                       
                     </div>
-                    <span id="current-level"></span>
-                    <span id="current-score"></span>
+                    
                 </div>
                 
                 <!-- 积分卡片 -->

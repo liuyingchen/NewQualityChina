@@ -17,6 +17,34 @@
         <button id="start-btn">START</button>
     </div>
 
+     <!-- 添加音频管理器脚本 -->
+     <script src="js/audio-manager.js"></script>
+     <script>
+         document.addEventListener('DOMContentLoaded', function() {
+             // 创建音频管理器实例（如果尚未在 audio-manager.js 中创建）
+             if (typeof audioManager === 'undefined') {
+                console.error('音频管理器未初始化');
+                 audioManager = new AudioManager();
+             }
+             
+             // 加载所需的音频文件
+            //  audioManager.load('enter', 'assets/enter.mp3', 'effect');
+            //  audioManager.load('click', 'assets/click.mp3', 'effect');
+             
+             // 进入开始界面时播放 enter.mp3
+             audioManager.play('enter');
+             
+             // 点击开始按钮时播放 click.mp3
+             const startBtn = document.getElementById('start-btn');
+             if (startBtn) {
+                 startBtn.addEventListener('click', function() {
+                     audioManager.play('click');
+                     // 这里可以添加其他开始游戏的逻辑
+                 });
+             }
+         });
+     </script>
+
     <!-- 角色选择界面 -->
     <div id="character-select" class="screen hidden">
         <div class="screen-header">
@@ -102,6 +130,5 @@
     <script src="js/games/electric_street.js"></script>
     <script src="js/games/game2.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/dev-tools/auto-refresh.js"></script>
 </body>
 </html> 

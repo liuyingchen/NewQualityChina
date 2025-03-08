@@ -159,6 +159,16 @@ button:hover {
     transform: translateX(-50%); /* 水平居中 */
     font-size: 1.2rem;
     padding: 15px 30px;
+    background-color: #87CEEB; /* 天空蓝色 */
+    color: white; /* 文字颜色设为白色，增加对比度 */
+    border: none; /* 移除边框 */
+    border-radius: 5px; /* 添加圆角 */
+    cursor: pointer; /* 鼠标悬停时显示手型光标 */
+}
+
+/* 添加悬停效果 */
+#start-btn:hover {
+    background-color: #5CACEE; /* 悬停时颜色稍深 */
 }
 
 /* 角色选择界面优化 */
@@ -837,4 +847,26 @@ div.scene-status.unlocked-status {
 .scene-text p {
     margin: 0;
     font-size: 0.9em; /* 减小描述文字字体 */
+}
+
+/* 添加建造按钮样式 */
+#place-block {
+    padding: 15px 30px; 
+    font-size: 1.2rem; 
+    background-color: #87CEEB; 
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    text-align: center;
+    line-height: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s;
+}
+
+#place-block:hover {
+    background-color: #5CACEE;
 }

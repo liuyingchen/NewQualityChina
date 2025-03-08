@@ -1,0 +1,37 @@
+{
+  "name": "chinas-tech-adventure",
+  "version": "1.0.0",
+  "description": "Interactive educational game about China's technology advancements",
+  "main": "index.html",
+  "scripts": {
+    "start": "live-server --port=8080 --host=localhost",
+    "start:prod": "http-server -p 80 -a 0.0.0.0 --cors",
+    "build": "echo 'No build step required for static site'",
+    "lint": "echo 'No linting configured'",
+    "test": "echo 'No tests configured'"
+  },
+  "keywords": [
+    "education",
+    "game",
+    "technology",
+    "china",
+    "interactive"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "private": true,
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+} 

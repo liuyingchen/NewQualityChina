@@ -71,7 +71,7 @@ function createGameUI(container, character) {
     const backButton = document.createElement('button');
     backButton.id = 'back-to-scene';
     backButton.className = 'back-button'; // 只使用CSS类
-    backButton.textContent = '返回';
+    backButton.textContent = 'BACK';
     
     // 调整位置，因为原始CSS可能将按钮放在不适合游戏界面的位置
     backButton.style.top = '20px'; // 覆盖CSS中的top值
@@ -534,45 +534,234 @@ function createPuzzleGame(container, character) {
                 <div style="margin:20px 0;font-size:18px;">
                     <p>Points: <span style="font-weight:bold;color:#f1c40f;">${earnedPoints}</span></p>
                 </div>
-                <div style="margin-top:30px;">
-                    <button id="continue-btn" style="background:#2ecc71;color:white;border:none;padding:12px 25px;border-radius:30px;font-size:16px;cursor:pointer;transition:all 0.3s;">BACK</button>
-                </div>
             `;
             
             gameContainer.appendChild(successElement);
+
+
+            setTimeout(() => {
+                // 移除成功信息元素
+                if (gameContainer.contains(successElement)) {
+                    gameContainer.removeChild(successElement);
+                }
+                
+                // 跳转到获奖页面
+                navigateToAwardsPage();
+            }, 1000);
             
-            // 添加返回按钮事件（参考stacking.js的实现）
-            document.getElementById('continue-btn').addEventListener('click', () => {
-                // 保存角色数据
-                saveCharacter(character);
+            // // 添加返回按钮事件（参考stacking.js的实现）
+            // document.getElementById('continue-btn').addEventListener('click', () => {
+            //     // 保存角色数据
+            //     saveCharacter(character);
                 
-                // 恢复游戏场景的原始内容
-                const gameScreen = document.getElementById('game-screen');
-                if (gameScreen) {
-                    const originalContent = gameScreen.getAttribute('data-original-content');
-                    if (originalContent) {
-                        gameScreen.innerHTML = originalContent;
-                    }
-                }
+            //     // 恢复游戏场景的原始内容
+            //     const gameScreen = document.getElementById('game-screen');
+            //     if (gameScreen) {
+            //         const originalContent = gameScreen.getAttribute('data-original-content');
+            //         if (originalContent) {
+            //             gameScreen.innerHTML = originalContent;
+            //         }
+            //     }
                 
-                // 使用switchScreen切换回场景选择界面
-                if (typeof switchScreen === 'function') {
-                    switchScreen('game-screen', 'scene-select');
+            //     // 使用switchScreen切换回场景选择界面
+            //     if (typeof switchScreen === 'function') {
+            //         switchScreen('game-screen', 'scene-select');
                     
-                    // 重新渲染场景
-                    if (typeof renderScenes === 'function') {
-                        renderScenes(character);
-                    }
-                } else {
-                    console.error('switchScreen函数不存在');
-                    // 备用方案：重新加载页面
-                    window.location.reload();
-                }
-            });
+            //         // 重新渲染场景
+            //         if (typeof renderScenes === 'function') {
+            //             renderScenes(character);
+            //         }
+            //     } else {
+            //         console.error('switchScreen函数不存在');
+            //         // 备用方案：重新加载页面
+            //         window.location.reload();
+            //     }
+            // });
         }, 1000);
 
         
     }
+
+
+    function navigateToAwardsPage() {
+        console.log('跳转到最终获奖页面');
+        
+        // 清空当前游戏内容
+        const gameScreen = document.getElementById('game-screen');
+        if (gameScreen) {
+            gameScreen.innerHTML = '';
+            
+            // 创建获奖页面
+            const awardsPage = document.createElement('div');
+            awardsPage.id = 'awards-page';
+            awardsPage.style.cssText = 'width:100%;height:100%;background:url("assets/games/su-bg.png") center/cover no-repeat;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;';
+            
+            let awardImage, awardTitle;
+            if (character.score < 400) {
+                awardImage = "assets/games/bone.png";
+                awardTitle = "BRONZE PASS";
+            } else if (character.score >= 400 && character.score <= 500) {
+                awardImage = "assets/games/silver.png";
+                awardTitle = "SILVER PASS";
+            } else {
+                awardImage = "assets/games/gold.png";
+                awardTitle = "GOLD PASS";
+            }
+
+            // 获奖页面内容
+            awardsPage.innerHTML = `
+                <div style="background:rgba(0,0,0,0.1);padding:60px;border-radius:20px;text-align:center;max-width:1000px;animation:fadeIn 1s ease-out;">
+                    <h1 style="color:#f1c40f;margin-bottom:10px;font-size:48px;animation:slideDown 0.8s ease-out;text-shadow:0 2px 5px rgba(0,0,0,0.5);">Congratulations!</h1>
+                   
+                    <div class="award-badge" style="margin:30px auto;width:242px;height:242px;position:relative;animation:scaleIn 1.2s ease-out, rotate 10s infinite linear, shine 3s infinite;">
+                        <img src="${awardImage}" alt="${awardTitle}" style="width:130%;height:130%;object-fit:contain;filter:drop-shadow(0 0 10px rgba(255, 215, 0, 0.7));position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);">
+                    </div>
+                    <div style="color:#f1c40f;font-size:32px;font-weight:bold;margin-top:10px;margin-bottom:30px;animation:fadeIn 1.5s ease-out;text-shadow:0 2px 5px rgba(0,0,0,0.5);">${awardTitle === "铜奖" ? "Bronze" : awardTitle === "银奖" ? "Silver" : "Gold"} PASS</div>
+                    
+                      <div style="margin:30px 0;padding:15px;background:rgba(255,255,255,0.2);border-radius:10px;animation:fadeIn 2s ease-out;">
+                        <p style="font-size:20px;color:#000000;margin-bottom:15px;font-weight:bold;animation:colorPulse 3s infinite;text-shadow:0 1px 1px rgba(255,255,255,0.5);">For more practical cases of China's sustainability efforts, please click here:</p>
+                        <a href="https://urdu.cgtn.com/shipin/zhongguo" target="_blank" style="display:inline-block;color:#3498db;font-size:18px;font-weight:bold;text-decoration:none;padding:10px 20px;background:rgba(255,255,255,0.4);border-radius:30px;transition:all 0.3s ease;box-shadow:0 2px 5px rgba(0,0,0,0.2);animation:bounce 2s infinite;">Explore More Cases</a>
+                    </div>
+
+                </div>
+            `;
+            
+            // 添加CSS动画
+            const styleElement = document.createElement('style');
+            styleElement.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                
+                @keyframes slideDown {
+                    from { transform: translateY(-50px); opacity: 0; }
+                    to { transform: translateY(0); opacity: 1; }
+                }
+                
+                @keyframes slideUp {
+                    from { transform: translateY(50px); opacity: 0; }
+                    to { transform: translateY(0); opacity: 1; }
+                }
+                
+                @keyframes scaleIn {
+                    0% { transform: scale(0); opacity: 0; }
+                    50% { transform: scale(1.2); opacity: 1; }
+                    100% { transform: scale(1); opacity: 1; }
+                }
+                
+                @keyframes pulse {
+                    0% { transform: scale(1); }
+                    50% { transform: scale(1.05); }
+                    100% { transform: scale(1); }
+                }
+                
+                @keyframes colorPulse {
+                    0% { color: #000000; }
+                    50% { color: #333333; }
+                    100% { color: #000000; }
+                }
+                
+                @keyframes bounce {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(-10px); }
+                }
+                
+                @keyframes rotate {
+                    0% { transform: rotate(0deg); }
+                    25% { transform: rotate(3deg); }
+                    50% { transform: rotate(0deg); }
+                    75% { transform: rotate(-3deg); }
+                    100% { transform: rotate(0deg); }
+                }
+                
+                @keyframes shine {
+                    0% { filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5)); }
+                    50% { filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)); }
+                    100% { filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5)); }
+                }
+                
+                .award-badge {
+                    transform-origin: center;
+                }
+                
+                .award-badge:hover {
+                    animation: pulse 0.5s infinite !important;
+                    filter: brightness(1.2);
+                    cursor: pointer;
+                }
+                
+                .award-card {
+                    transition: all 0.3s ease;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                }
+                
+                .award-card:hover {
+                    transform: translateY(-10px);
+                    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+                }
+                
+                #return-to-main {
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                }
+                
+                #return-to-main:hover {
+                    background-color: #5CACEE;
+                    transform: scale(1.05);
+                    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+                }
+            `;
+            document.head.appendChild(styleElement);
+              
+              gameScreen.appendChild(awardsPage);
+              
+              // 添加分数计数动画
+              setTimeout(() => {
+                  const scoreCounter = document.querySelector('.score-counter');
+                  if (scoreCounter) {
+                      const finalScore = character.score;
+                      let currentScore = 0;
+                      const duration = 2000; // 2秒内完成计数
+                      const interval = 20; // 每20毫秒更新一次
+                      const increment = Math.max(1, Math.floor(finalScore / (duration / interval)));
+                      
+                      const counterInterval = setInterval(() => {
+                          currentScore += increment;
+                          if (currentScore >= finalScore) {
+                              currentScore = finalScore;
+                              clearInterval(counterInterval);
+                          }
+                          scoreCounter.textContent = currentScore;
+                      }, interval);
+                  }
+              }, 500);
+            
+            // 添加返回主页按钮事件
+            setTimeout(() => {
+                const returnButton = document.getElementById('return-to-main');
+                if (returnButton) {
+                    returnButton.addEventListener('click', () => {
+                        // 使用switchScreen切换回场景选择界面
+                        if (typeof switchScreen === 'function') {
+                            switchScreen('game-screen', 'scene-select');
+                            
+                            // 重新渲染场景
+                            if (typeof renderScenes === 'function') {
+                                renderScenes(character);
+                            }
+                        } else {
+                            // 如果switchScreen不可用，直接刷新页面
+                            window.location.reload();
+                        }
+                    });
+                }
+            }, 100);
+        } else {
+            console.error('找不到游戏屏幕元素');
+        }
+    }
+
+
 }
 
 // 确保showAwardsModal函数在全局作用域中可用

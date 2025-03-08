@@ -159,15 +159,23 @@
 }
 
 #place-block {
-    padding: 15px 30px;
-    font-size: 1.2rem;
-    background-color: #2ecc71;
-    width: 80%;
-    max-width: 300px;
+    padding: 15px 30px; 
+    font-size: 1.2rem; 
+    background-color: #87CEEB; 
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    text-align: center;
+    line-height: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s;
 }
-
 #place-block:hover {
-    background-color: #27ae60;
+    background-color: #5CACEE;
 }
 
 /* 增强游戏内统计信息的可见性 */

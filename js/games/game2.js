@@ -591,7 +591,7 @@ function createPuzzleGame(container, character) {
         if (gameScreen) {
             gameScreen.innerHTML = '';
             
-            // 创建获奖页面
+            // 创建奖励页面
             const awardsPage = document.createElement('div');
             awardsPage.id = 'awards-page';
             awardsPage.style.cssText = 'width:100%;height:100%;background:url("assets/games/su-bg.png") center/cover no-repeat;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;';
@@ -610,9 +610,15 @@ function createPuzzleGame(container, character) {
 
             // 获奖页面内容
             awardsPage.innerHTML = `
+                <!-- 添加返回按钮 -->
+                
+                <button id="back-to-scene" class="back-button game-back-button" style="margin-left:30px;margin-top:30px;">BACK</button>
+                
+                
                 <div style="background:rgba(0,0,0,0.1);padding:60px;border-radius:20px;text-align:center;max-width:1000px;animation:fadeIn 1s ease-out;">
-                    <h1 style="color:#f1c40f;margin-bottom:10px;font-size:48px;animation:slideDown 0.8s ease-out;text-shadow:0 2px 5px rgba(0,0,0,0.5);">Congratulations!</h1>
-                   
+                    <h1 style="color:#f1c40f;margin-bottom:10px;font-size:48px;animation:slideDown 0.8s ease-out;">Congratulations!</h1>
+                    <h2 style="color:#f1c40f;margin-bottom:40px;font-size:36px;animation:slideDown 0.8s ease-out 0.2s;">You Have Finished All Challenges!</h2>
+                    
                     <div class="award-badge" style="margin:30px auto;width:242px;height:242px;position:relative;animation:scaleIn 1.2s ease-out, rotate 10s infinite linear, shine 3s infinite;">
                         <img src="${awardImage}" alt="${awardTitle}" style="width:130%;height:130%;object-fit:contain;filter:drop-shadow(0 0 10px rgba(255, 215, 0, 0.7));position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);">
                     </div>
@@ -710,52 +716,65 @@ function createPuzzleGame(container, character) {
                     transform: scale(1.05);
                     box-shadow: 0 8px 20px rgba(0,0,0,0.3);
                 }
+                
+                /* 返回按钮样式 */
+                #back-to-scene:hover {
+                    background-color: #5CACEE;
+                    transform: scale(1.05);
+                    box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+                }
             `;
             document.head.appendChild(styleElement);
               
               gameScreen.appendChild(awardsPage);
               
-              // 添加分数计数动画
+              // 添加返回按钮事件监听器
               setTimeout(() => {
-                  const scoreCounter = document.querySelector('.score-counter');
-                  if (scoreCounter) {
-                      const finalScore = character.score;
-                      let currentScore = 0;
-                      const duration = 2000; // 2秒内完成计数
-                      const interval = 20; // 每20毫秒更新一次
-                      const increment = Math.max(1, Math.floor(finalScore / (duration / interval)));
-                      
-                      const counterInterval = setInterval(() => {
-                          currentScore += increment;
-                          if (currentScore >= finalScore) {
-                              currentScore = finalScore;
-                              clearInterval(counterInterval);
+                  const backButton = document.getElementById('back-to-scene');
+                  if (backButton) {
+                      backButton.addEventListener('click', () => {
+                          // 恢复游戏场景的原始内容
+                          const gameScreen = document.getElementById('game-screen');
+                          if (gameScreen) {
+                              const originalContent = gameScreen.getAttribute('data-original-content');
+                              if (originalContent) {
+                                  gameScreen.innerHTML = originalContent;
+                              }
                           }
-                          scoreCounter.textContent = currentScore;
-                      }, interval);
+                          
+                          // 使用switchScreen切换回场景选择界面
+                          if (typeof switchScreen === 'function') {
+                              switchScreen('game-screen', 'scene-select');
+                              
+                              // 重新渲染场景
+                              if (typeof renderScenes === 'function') {
+                                  renderScenes(character);
+                              }
+                          }
+                      });
                   }
-              }, 500);
+              }, 100);
             
-            // 添加返回主页按钮事件
+            // 添加分数计数动画
             setTimeout(() => {
-                const returnButton = document.getElementById('return-to-main');
-                if (returnButton) {
-                    returnButton.addEventListener('click', () => {
-                        // 使用switchScreen切换回场景选择界面
-                        if (typeof switchScreen === 'function') {
-                            switchScreen('game-screen', 'scene-select');
-                            
-                            // 重新渲染场景
-                            if (typeof renderScenes === 'function') {
-                                renderScenes(character);
-                            }
-                        } else {
-                            // 如果switchScreen不可用，直接刷新页面
-                            window.location.reload();
+                const scoreCounter = document.querySelector('.score-counter');
+                if (scoreCounter) {
+                    const finalScore = character.score;
+                    let currentScore = 0;
+                    const duration = 2000; // 2秒内完成计数
+                    const interval = 20; // 每20毫秒更新一次
+                    const increment = Math.max(1, Math.floor(finalScore / (duration / interval)));
+                    
+                    const counterInterval = setInterval(() => {
+                        currentScore += increment;
+                        if (currentScore >= finalScore) {
+                            currentScore = finalScore;
+                            clearInterval(counterInterval);
                         }
-                    });
+                        scoreCounter.textContent = currentScore;
+                    }, interval);
                 }
-            }, 100);
+            }, 500);
         } else {
             console.error('找不到游戏屏幕元素');
         }

@@ -661,11 +661,17 @@ function createPuzzleGame(container, character) {
                     
                       <div style="margin:30px 0;padding:15px;background:rgba(255,255,255,0.2);border-radius:10px;animation:fadeIn 2s ease-out;">
                         <p style="font-size:20px;color:#000000;margin-bottom:15px;font-weight:bold;animation:colorPulse 3s infinite;text-shadow:0 1px 1px rgba(255,255,255,0.5);">For more practical cases of China's sustainability efforts, please click here:</p>
-                        <a href="https://urdu.cgtn.com/2024/12/19/VIDE1734598684284269" target="_blank" style="display:inline-block;color:#3498db;font-size:18px;font-weight:bold;text-decoration:none;padding:10px 20px;background:rgba(255,255,255,0.4);border-radius:30px;transition:all 0.3s ease;box-shadow:0 2px 5px rgba(0,0,0,0.2);animation:bounce 2s infinite;">Explore More Cases</a>
+                        <a id="explore-more-btn" href="javascript:void(0)" style="display:inline-block;color:#3498db;font-size:18px;font-weight:bold;text-decoration:none;padding:10px 20px;background:rgba(255,255,255,0.4);border-radius:30px;transition:all 0.3s ease;box-shadow:0 2px 5px rgba(0,0,0,0.2);animation:bounce 2s infinite;">Explore More Cases</a>
                     </div>
 
                 </div>
             `;
+            
+
+
+
+
+
             
             // 添加CSS动画
             const styleElement = document.createElement('style');
@@ -762,6 +768,229 @@ function createPuzzleGame(container, character) {
             document.head.appendChild(styleElement);
               
               gameScreen.appendChild(awardsPage);
+
+
+              //**** 添加轮播图 */
+              document.getElementById('explore-more-btn').addEventListener('click', function() {
+                // 轮播图数据
+                const carouselItems = [
+                    {
+                        image: 'assets/games/case1.jpg',
+                        link: 'https://urdu.cgtn.com/2025/03/13/VIDE1741862393478205'
+                    },
+                    {
+                        image: 'assets/games/case2.jpg',
+                        
+                        link: 'https://urdu.cgtn.com/2024/11/11/VIDE1731316374980238'
+                    },
+                    {
+                        image: 'assets/games/case3.jpg',
+                        
+                        link: 'https://urdu.cgtn.com/2024/09/24/VIDE1727161928042281'
+                    },
+                    {
+                        image: 'assets/games/case4.jpg',
+                        
+                        link: 'https://urdu.cgtn.com/2024/09/24/VIDE1727159904917172'
+                    },
+                    {
+                        image: 'assets/games/case5.jpg',
+                        
+                        link: 'https://urdu.cgtn.com/2024/08/14/VIDEvNs7W7Z7P3eRz5JiZuxX240814'
+                    }
+                ];
+                
+                // 创建轮播图HTML
+                let carouselHTML = `
+                    <div class="carousel-container" style="position:relative;width:100%;max-width:100%;margin:0 auto;height:500px;overflow:hidden;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.3);">
+                        <div class="carousel-slides" style="display:flex;transition:transform 0.5s ease;">
+                `;
+                
+                // 添加轮播图项目
+                carouselItems.forEach((item, index) => {
+                    carouselHTML += `
+                        <div class="carousel-item" style="min-width:100%;height:500px;position:relative;background:linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.4)), url('${item.image}');background-size:cover;background-position:center;cursor:pointer;" onclick="window.open('${item.link}', '_blank')">
+                            <div style="position:absolute;bottom:0;left:0;right:0;padding:40px;color:white;text-align:center;">
+                                
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                // 添加导航按钮和指示器
+                carouselHTML += `
+                        </div>
+                        <button class="carousel-prev" style="position:absolute;top:50%;left:10px;transform:translateY(-50%);background:rgba(0,0,0,0.5);color:white;border:none;width:40px;height:40px;border-radius:50%;font-size:20px;cursor:pointer;z-index:10;">&lt;</button>
+                        <button class="carousel-next" style="position:absolute;top:50%;right:10px;transform:translateY(-50%);background:rgba(0,0,0,0.5);color:white;border:none;width:40px;height:40px;border-radius:50%;font-size:20px;cursor:pointer;z-index:10;">&gt;</button>
+                        <div class="carousel-indicators" style="position:absolute;bottom:10px;left:0;right:0;display:flex;justify-content:center;gap:10px;">
+                `;
+                
+                // 添加指示器点
+                carouselItems.forEach((_, index) => {
+                    carouselHTML += `
+                        <button class="carousel-indicator${index === 0 ? ' active' : ''}" data-index="${index}" style="width:5px;height:5px;border-radius:50%;border:none;background:${index === 0 ? 'white' : 'rgba(255,255,255,0.5)'};cursor:pointer;"></button>
+                    `;
+                });
+                
+                carouselHTML += `
+                        </div>
+                    </div>
+                    <button id="back-to-award" style="margin-top:20px;padding:10px 20px;background:#e74c3c;color:white;border:none;border-radius:5px;cursor:pointer;font-weight:bold;">Back to Award</button>
+                `;
+                
+                // 替换内容
+                const awardContent = document.querySelector('.award-badge').parentNode;
+                awardContent.style.maxWidth = "80%"; // 增加父容器宽度
+                awardContent.style.width = "80%"; // 确保宽度足够
+                awardContent.innerHTML = carouselHTML;
+                
+                // 轮播图功能实现
+                let currentSlide = 0;
+                const slides = document.querySelector('.carousel-slides');
+                const indicators = document.querySelectorAll('.carousel-indicator');
+                const totalSlides = carouselItems.length;
+                
+                // 更新轮播图位置
+                function updateCarousel() {
+                    slides.style.transform = `translateX(-${currentSlide * 100}%)`;
+                    
+                    // 更新指示器
+                    indicators.forEach((indicator, index) => {
+                        if (index === currentSlide) {
+                            indicator.style.background = 'white';
+                        } else {
+                            indicator.style.background = 'rgba(255,255,255,0.5)';
+                        }
+                    });
+                }
+                
+                // 下一张幻灯片
+                function nextSlide() {
+                    currentSlide = (currentSlide + 1) % totalSlides;
+                    updateCarousel();
+                }
+                
+                // 上一张幻灯片
+                function prevSlide() {
+                    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                    updateCarousel();
+                }
+                
+                // 添加事件监听器
+                document.querySelector('.carousel-next').addEventListener('click', nextSlide);
+                document.querySelector('.carousel-prev').addEventListener('click', prevSlide);
+                
+                // 指示器点击事件
+                indicators.forEach(indicator => {
+                    indicator.addEventListener('click', function() {
+                        currentSlide = parseInt(this.dataset.index);
+                        updateCarousel();
+                    });
+                });
+                
+                // 自动轮播
+                const autoSlideInterval = setInterval(nextSlide, 1500);
+                
+                // 返回奖励页面
+                document.getElementById('back-to-award').addEventListener('click', function() {
+                    clearInterval(autoSlideInterval);
+                    
+                    // 重新加载原始奖励页面
+                    awardsPage.innerHTML = `
+                        <!-- 添加返回按钮 -->
+                        
+                        <button id="back-to-scene" class="back-button game-back-button" style="margin-left:30px;margin-top:30px;">BACK</button>
+                        
+                        
+                        <div style="background:rgba(0,0,0,0.1);padding:60px;border-radius:20px;text-align:center;max-width:1000px;animation:fadeIn 1s ease-out;">
+                            <h1 style="color:#f1c40f;margin-bottom:10px;font-size:48px;animation:slideDown 0.8s ease-out;">Congratulations!</h1>
+                            <h2 style="color:#f1c40f;margin-bottom:40px;font-size:36px;animation:slideDown 0.8s ease-out 0.2s;">You Have Finished All Challenges!</h2>
+                            
+                            <div class="award-badge" style="margin:30px auto;width:242px;height:242px;position:relative;animation:scaleIn 1.2s ease-out, rotate 10s infinite linear, shine 3s infinite;">
+                                <img src="${awardImage}" alt="${awardTitle}" style="width:130%;height:130%;object-fit:contain;filter:drop-shadow(0 0 10px rgba(255, 215, 0, 0.7));position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);">
+                            </div>
+                            <div style="color:#f1c40f;font-size:32px;font-weight:bold;margin-top:10px;margin-bottom:30px;animation:fadeIn 1.5s ease-out;text-shadow:0 2px 5px rgba(0,0,0,0.5);">${awardTitle === "铜奖" ? "Bronze" : awardTitle === "银奖" ? "Silver" : "Gold"} PASS</div>
+                            
+                              <div style="margin:30px 0;padding:15px;background:rgba(255,255,255,0.2);border-radius:10px;animation:fadeIn 2s ease-out;">
+                                <p style="font-size:20px;color:#000000;margin-bottom:15px;font-weight:bold;animation:colorPulse 3s infinite;text-shadow:0 1px 1px rgba(255,255,255,0.5);">For more practical cases of China's sustainability efforts, please click here:</p>
+                                <a id="explore-more-btn" href="javascript:void(0)" style="display:inline-block;color:#3498db;font-size:18px;font-weight:bold;text-decoration:none;padding:10px 20px;background:rgba(255,255,255,0.4);border-radius:30px;transition:all 0.3s ease;box-shadow:0 2px 5px rgba(0,0,0,0.2);animation:bounce 2s infinite;">Explore More Cases</a>
+                            </div>
+
+                        </div>
+                    `;
+                    
+                    // 重新添加事件监听器
+                    document.getElementById('explore-more-btn').addEventListener('click', arguments.callee);
+                    document.getElementById('back-to-scene').addEventListener('click', () => {
+                    //播放click音效
+                  
+                    if (typeof audioManager !== 'undefined') {
+                      audioManager.play('click');  // 播放点击音效
+                  
+                  }
+                    // 恢复游戏场景的原始内容
+                    const gameScreen = document.getElementById('game-screen');
+                    if (gameScreen) {
+                        const originalContent = gameScreen.getAttribute('data-original-content');
+                        if (originalContent) {
+                            gameScreen.innerHTML = originalContent;
+                        }
+                    }
+                    
+                    // 使用switchScreen切换回场景选择界面
+                    if (typeof switchScreen === 'function') {
+                        switchScreen('game-screen', 'scene-select');
+                        
+                        // 重新渲染场景
+                        if (typeof renderScenes === 'function') {
+                            renderScenes(character);
+                        }
+                    }
+                });
+                });
+                
+                // 添加返回按钮事件
+                document.getElementById('back-to-scene').addEventListener('click', () => {
+                    //播放click音效
+                  
+                    if (typeof audioManager !== 'undefined') {
+                      audioManager.play('click');  // 播放点击音效
+                  
+                  }
+                    // 恢复游戏场景的原始内容
+                    const gameScreen = document.getElementById('game-screen');
+                    if (gameScreen) {
+                        const originalContent = gameScreen.getAttribute('data-original-content');
+                        if (originalContent) {
+                            gameScreen.innerHTML = originalContent;
+                        }
+                    }
+                    
+                    // 使用switchScreen切换回场景选择界面
+                    if (typeof switchScreen === 'function') {
+                        switchScreen('game-screen', 'scene-select');
+                        
+                        // 重新渲染场景
+                        if (typeof renderScenes === 'function') {
+                            renderScenes(character);
+                        }
+                    }
+                });
+            });
+            
+            // 添加返回按钮事件
+            // document.getElementById('back-to-scene').addEventListener('click', function() {
+            //     if (typeof audioManager !== 'undefined') {
+            //         audioManager.play('click');
+            //         audioManager.stop('game2');
+            //     }
+            //     exitGame();
+            // });
+
+
+              //*** 轮播图代码 */
+
+
               
               // 添加返回按钮事件监听器
               setTimeout(() => {
